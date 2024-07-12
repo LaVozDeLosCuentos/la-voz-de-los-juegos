@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "llamarada",
+    "img": "/assets/characters/llamarada.png"
+  },
+  {
+    "id": 2,
+    "name": "samurai",
+    "img": "/assets/characters/samurai.png"
+  },
+  {
+    "id": 3,
+    "name": "test1",
+    "img": "/assets/characters/test1.png"
+  },
+  {
+    "id": 4,
+    "name": "test2",
+    "img": "/assets/characters/test2.png"
+  }
+]
