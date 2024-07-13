@@ -1,9 +1,12 @@
 import Board from '../components/Board';
 import characters from '../../data/characters.json';
+import EventHandler from "../../services/services.events";
 
-export default class GameScene extends Phaser.Scene {
+export default class CardGameScene extends Phaser.Scene {
     constructor() {
-        super();
+        super({
+            key: 'CardGameScene'
+        });
         this.cards = [];
         this.selectedCards = [];
         this.attempts = 0;
@@ -18,7 +21,6 @@ export default class GameScene extends Phaser.Scene {
     init() { }
     preload() {
         this._loadAssets();
-        this._newRound(true);
         this._createUX()
     }
 
@@ -35,17 +37,7 @@ export default class GameScene extends Phaser.Scene {
         this.load.image('card-bg', `assets/cards/default.png`);
     }
 
-    _cardClickHandler(card) {
-        if (this.waitForNewRound || card.out) { return; }
-        card.faceUp();
-        this.selectedCards.push(card);
-        if (this.selectedCards.length === 2) {
-            this._newRound();
-        }
-    }
-
     _addNewAttempt() {
-        ;
         this.newScore = this.currentScore + 200
         this.tweens.addCounter({
             from: this.currentScore,
@@ -60,61 +52,24 @@ export default class GameScene extends Phaser.Scene {
         });
     }
 
-    _onSuccessPair() {
-        this._setAsReadOnly();
-    }
-
-    _onErrorPair() {
-        this._faceCardsDown();
-    }
-
-    _newRound(init) {
-        this.waitForNewRound = true;
-        setTimeout(() => {
-
-            if (this._matchCards()) {
-                this._onSuccessPair()
-            } else {
-                this._onErrorPair()
-            }
-            this.selectedCards.length = 0;
-            this.waitForNewRound = false;
-            if (init) return
-            this._addNewAttempt()
-        }, 1000);
-    }
-
-    _matchedCards() {
-        return this.cards.filter((card) => card.outOfTheGame).length / 2;
-    }
-
     _createScore() {
         var style = { font: 'bold 32px Arial', fill: '#fff', boundsAlignH: 'center', boundsAlignV: 'middle' };
 
         if (!this.score) {
             this.score = this.add.text(0, 0, 'Score: ', style);
         }
-
-
     }
 
-    _setAsReadOnly() {
-        this.selectedCards.forEach((card) => card.readOnly());
-    }
+    _addListeners() {
+        EventHandler.on('board::attempt', this._addNewAttempt, this)
+        EventHandler.on('board::success', this._addNewAttempt, this)
+        EventHandler.on('board::fail', this._addNewAttempt, this)
+        EventHandler.on('board::match', this._addNewAttempt, this)
 
-    _faceCardsDown() {
-        this.selectedCards.forEach((card) => card.faceDown());
-    }
-
-    _matchCards() {
-        if (!this.selectedCards.length) { return; }
-        const cardA = this.selectedCards[0];
-        const cardB = this.selectedCards[1];
-
-        return cardA.key === cardB.key;
     }
 
     create() {
+        this._addListeners()
         this.board = new Board({
             scene: this,
             characters: this.characters

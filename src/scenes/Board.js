@@ -59,7 +59,6 @@ export default class GameScene extends Phaser.Scene {
   }
 
   _onSuccessPair () {
-    this._setAsReadOnly();
   }
 
   _onErrorPair () {
@@ -92,12 +91,6 @@ export default class GameScene extends Phaser.Scene {
     if (!this.score) {
       this.score = this.add.text(0, 0, 'Score: ', style);
     }
-
- 
-  }
-
-  _setAsReadOnly() {
-    this.selectedCards.forEach((card) => card.readOnly());
   }
 
   _faceCardsDown() {

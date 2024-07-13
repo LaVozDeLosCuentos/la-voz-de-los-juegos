@@ -1,11 +1,11 @@
 
+import EventHandler from "../../services/services.events";
+
 export default class Card {
-    constructor({ key, gameScene, x, y, handler, tweens }) {
+    constructor({ key, gameScene, x, y }) {
         this.key = `card-${key}`;
         this.gameScene = gameScene;
-        this.handler = handler;
-        this.outOfTheGame = false;
-        this.tweens = tweens
+        this.tweens = gameScene.tweens
         this._draw(x, y);
         this.state = 0
     }
@@ -17,18 +17,9 @@ export default class Card {
         this.faceDown();
     }
 
-    readOnly() {
-        this.outOfTheGame = true;
-    }
-
-    isVisible() {
-        return this.state === 1;
-    }
-
     faceDown() {
-        if (this.outOfTheGame) return
+        if(!this.state) return 
         this.state = 0
-
         this.tweens.add({
             targets: this.image,
             props: {
@@ -40,7 +31,7 @@ export default class Card {
     }
 
     faceUp() {
-        if (this.outOfTheGame) return
+        if (this.state) return
         this.state = 1
         this.tweens.add({
             targets: this.image,
@@ -53,6 +44,6 @@ export default class Card {
     }
 
     _onClickHandler() {
-        this.handler(this);
+        if (!this.state) EventHandler.emit('card::click', this)
     }
 }

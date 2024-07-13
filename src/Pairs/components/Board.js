@@ -1,33 +1,34 @@
 import Card from '../components/Card';
+import EventHandler from "../../services/services.events";
 
 import { getRandomInt } from '../../utils/random.util';
-
+const MAX_CARD_PER_LINE = 2;
+const H_OFFSET = 150;
+const V_OFFSET = 170;
+const INITIAL_X = 100;
+const INITIAL_Y = 100;
 export default class Board {
     constructor({ scene, characters }) {
         this.cards = [];
         this.selectedCards = [];
-        this.attempts = 0;
         this.waitForNewRound = false;
         this.tweens = scene.tweens
         this.scene = scene
         this.cards = characters
     }
 
-    init() {
-        console.log('init')
-    }
+    init() {}
 
-    _cardClickHandler(card) {
-        if (this.waitForNewRound || card.out) { return; }
+    _onClickCard(card) {
+        if (this.waitForNewRound || card.state) { return; }
         card.faceUp();
         this.selectedCards.push(card);
-        if (this.selectedCards.length === 2) {
+        if (this.selectedCards.length >= 2) {
             this._newRound();
         }
     }
 
     _onSuccessPair() {
-        this._setAsReadOnly();
     }
 
     _onErrorPair() {
@@ -35,13 +36,12 @@ export default class Board {
     }
 
     _onNewAttempt() {
-        console.log('new attempt')
+        EventHandler.emit('attempt')
     }
 
-    _newRound(init) {
+    _newRound() {
         this.waitForNewRound = true;
         setTimeout(() => {
-
             if (this._matchCards()) {
                 this._onSuccessPair()
             } else {
@@ -49,7 +49,6 @@ export default class Board {
             }
             this.selectedCards.length = 0;
             this.waitForNewRound = false;
-            if (init) return
             this._onNewAttempt()
         }, 1000);
     }
@@ -58,59 +57,83 @@ export default class Board {
         return this.cards.filter((card) => card.outOfTheGame).length / 2;
     }
 
-    _setAsReadOnly() {
-        this.selectedCards.forEach((card) => card.readOnly());
-    }
-
     _faceCardsDown() {
         this.selectedCards.forEach((card) => card.faceDown());
     }
 
     _matchCards() {
-        if (!this.selectedCards.length) { return; }
         const cardA = this.selectedCards[0];
         const cardB = this.selectedCards[1];
-
+        console.log(this.selectedCards.length)
+        console.log(cardA, cardB)
         return cardA.key === cardB.key;
     }
 
-    create() {
-        console.log('createdBoard')
+    _generateCard(position, key) {
+        new Card({ 
+            key, 
+            gameScene: this.scene, 
+            ...position, 
+            tweens: this.tweens 
+        })
+    }
 
-        this._newRound(true)
+    _drawPairs(posA, posB, key) {
+        this.cards = [...this.cards, this._generateCard(posA, key), this._generateCard(posB, key)]
+    }
 
-        const MAX_CARD_PER_LINE = 2;
-        const PAIRS = this.cards.length;
-        const H_OFFSET = 150;
-        const V_OFFSET = 170;
-        const INITIAL_X = 100;
-        const INITIAL_Y = 100;
-
-        const lines = parseInt(PAIRS * 2 / MAX_CARD_PER_LINE) + ((PAIRS * 2 / MAX_CARD_PER_LINE % MAX_CARD_PER_LINE ? 1 : 0));
-        const numberOfCards = PAIRS * 2;
-        const positions = [];
-
+    _assignCardsPosition() {
+        const positions = this._calculatePositions()
         const imageNames = this.cards.map(entry => entry.name)
-
-        let total = numberOfCards;
-        for (let line = 0; line < lines; line++) {
-            for (let pos = 0; pos < MAX_CARD_PER_LINE; pos++) {
-                if (total > 0) {
-                    positions.push({
-                        x: INITIAL_X + (H_OFFSET * pos),
-                        y: INITIAL_Y + (V_OFFSET * line)
-                    });
-                }
-                total--;
-            }
-        }
 
         while (positions.length) {
             const posA = positions.splice(getRandomInt(positions.length), 1)[0];
             const posB = positions.splice(getRandomInt(positions.length), 1)[0];
             const key = imageNames.splice(getRandomInt(imageNames.length), 1)[0];
-            this.cards.push(new Card({ key, gameScene: this.scene, ...posA, handler: this._cardClickHandler.bind(this), tweens: this.tweens }));
-            this.cards.push(new Card({ key, gameScene: this.scene, ...posB, handler: this._cardClickHandler.bind(this), tweens: this.tweens }));
+            this._drawPairs(posA, posB, key)
         }
+    }
+
+    _getPairs() {
+        return this.cards.length
+    }
+    _getTotalCards() {
+        return this._getPairs() * 2
+    }
+
+    _calculateLines() {
+        const TOTAL_CARDS = this._getTotalCards()
+        return TOTAL_CARDS / MAX_CARD_PER_LINE + ((TOTAL_CARDS / MAX_CARD_PER_LINE % MAX_CARD_PER_LINE ? 1 : 0));
+    }
+
+    _calculatePositions() {
+        let cardsNumber = this._getTotalCards()
+        const lines = this._calculateLines()
+        const positions = [];
+        for (let line = 0; line < lines; line++) {
+            for (let pos = 0; pos < MAX_CARD_PER_LINE; pos++) {
+                if (cardsNumber > 0) {
+                    positions.push({
+                        x: INITIAL_X + (H_OFFSET * pos),
+                        y: INITIAL_Y + (V_OFFSET * line)
+                    });
+                }
+                cardsNumber--;
+            }
+        }
+        return positions
+    }
+
+    _drawBoard () {
+        this._assignCardsPosition()
+    }
+
+    _addListeners() {
+        EventHandler.on('card::click', this._onClickCard, this)
+    }
+
+    create() {
+        this._drawBoard()
+        this._addListeners()
     }
 }
