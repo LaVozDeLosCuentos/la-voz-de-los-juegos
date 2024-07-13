@@ -1,6 +1,6 @@
-import Card from './Card';
-import  characters from './data/characters.json';
-import { getRandomInt } from './util';
+import Card from '../Card';
+import  characters from '../data/characters.json';
+import { getRandomInt } from '../util';
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -10,46 +10,75 @@ export default class GameScene extends Phaser.Scene {
     this.attempts = 0;
     this.waitForNewRound = false;
     this.score;
+    this.newScore;
+    this.currentScore = 0;
   }
 
   init() { }
   preload ()
   {
     this._loadCards();
-    this._newRound();
+    this._newRound(true);
+    this._createUX()
   }
   
-  _loadCards () {
-   characters.map((entry) => {
-    this.load.image(`card-${entry.name}`,  entry.img);
+  _createUX() {
+    this._createScore()
+  }
+  _loadCards () {7
+    characters.map((entry) => {
+      this.load.image(`card-${entry.name}`,  entry.img);
     });
     this.load.image('back-card', `assets/cards/back-card.png`);
     this.load.image('back-front-card', `assets/cards/back-front-card.png`);
     this.load.image('card-bg', `assets/cards/default.png`);
-
   }
 
   _cardClickHandler (card) {
     if (this.waitForNewRound || card.out) { return; }
-    card.faceUp(this.tweens);
+    card.faceUp();
     this.selectedCards.push(card);
     if (this.selectedCards.length === 2) {
       this._newRound();
     }
   }
 
-  _newRound() {
+  _addNewAttempt() {;
+    this.newScore = this.currentScore + 200
+    this.tweens.addCounter({
+      from: this.currentScore,
+      to: this.newScore,
+      duration: 2000,
+      ease: 'linear',
+      onUpdate: tween => {
+        const value = Math.round(tween.getValue());
+        this.score.setText(`Score: ${value}`);
+        this.currentScore = this.newScore
+      }
+    });
+  }
+
+  _onSuccessPair () {
+    this._setAsReadOnly();
+  }
+
+  _onErrorPair () {
+    this._faceCardsDown();
+  }
+
+  _newRound(init) {
     this.waitForNewRound = true;
     setTimeout(() => {
+      
       if (this._matchCards()) {
-        this._setAsReadOnly();
+        this._onSuccessPair()
       } else {
-        this._faceCardsDown();
+        this._onErrorPair()
       }
-      this._updateScore();
       this.selectedCards.length = 0;
       this.waitForNewRound = false;
-      this.attempts++;
+      if (init) return
+      this._addNewAttempt()
     }, 1000);
   }
 
@@ -57,17 +86,14 @@ export default class GameScene extends Phaser.Scene {
     return this.cards.filter((card) => card.outOfTheGame).length / 2;
   }
 
-  _updateScore() {
+  _createScore() {
     var style = { font: 'bold 32px Arial', fill: '#fff', boundsAlignH: 'center', boundsAlignV: 'middle' };
 
     if (!this.score) {
-      this.score = this.add.text(0, 400, '', style);
+      this.score = this.add.text(0, 0, 'Score: ', style);
     }
 
-    this.score.text = `
-      Attempts:${this.attempts}
-      Matches: ${this._matchedCards()}
-    `;
+ 
   }
 
   _setAsReadOnly() {
@@ -120,7 +146,6 @@ export default class GameScene extends Phaser.Scene {
       const key = imageNames.splice(getRandomInt(imageNames.length), 1)[0];
       this.cards.push(new Card({ key, gameScene: this, ...posA, handler: this._cardClickHandler.bind(this), tweens: this.tweens } ));
       this.cards.push(new Card( {key, gameScene: this, ...posB, handler: this._cardClickHandler.bind(this), tweens: this.tweens} ));
-    }
-    
+    }    
   }
 }
