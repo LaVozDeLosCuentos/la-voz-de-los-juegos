@@ -46,4 +46,7 @@ export default class Card {
     _onClickHandler() {
         if (!this.state) EventHandler.emit('card::click', this)
     }
+    reset() {
+        this.state = 0
+    }
 }

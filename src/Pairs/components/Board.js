@@ -5,16 +5,17 @@ import { getRandomInt } from '../../utils/random.util';
 const MAX_CARD_PER_LINE = 2;
 const H_OFFSET = 150;
 const V_OFFSET = 170;
-const INITIAL_X = 100;
-const INITIAL_Y = 100;
-export default class Board {
-    constructor({ scene, characters }) {
+const INITIAL_X = 135;
+const INITIAL_Y = 170;
+export default class Board extends Phaser.GameObjects.Container{
+    constructor({ scene, cards }) {
+        super(scene)
         this.cards = [];
         this.selectedCards = [];
         this.waitForNewRound = false;
         this.tweens = scene.tweens
         this.scene = scene
-        this.cards = characters
+        this.baseCards = cards
     }
 
     init() {}
@@ -23,26 +24,31 @@ export default class Board {
         if (this.waitForNewRound || card.state) { return; }
         card.faceUp();
         this.selectedCards.push(card);
-        if (this.selectedCards.length >= 2) {
+        if (this.selectedCards.length === 2) {
             this._newRound();
         }
     }
 
     _onSuccessPair() {
+        if (!this.cards.some((card) => card.state === 0)) {
+            setTimeout(() => EventHandler.emit('board::success'), 500)
+        }
     }
 
     _onErrorPair() {
+        EventHandler.emit('board::fail')
         this._faceCardsDown();
     }
 
     _onNewAttempt() {
-        EventHandler.emit('attempt')
+        EventHandler.emit('board::attempt')
     }
 
     _newRound() {
         this.waitForNewRound = true;
         setTimeout(() => {
             if (this._matchCards()) {
+                EventHandler.emit('board::match')
                 this._onSuccessPair()
             } else {
                 this._onErrorPair()
@@ -53,24 +59,17 @@ export default class Board {
         }, 1000);
     }
 
-    _matchedCards() {
-        return this.cards.filter((card) => card.outOfTheGame).length / 2;
-    }
-
     _faceCardsDown() {
         this.selectedCards.forEach((card) => card.faceDown());
     }
 
     _matchCards() {
-        const cardA = this.selectedCards[0];
-        const cardB = this.selectedCards[1];
-        console.log(this.selectedCards.length)
-        console.log(cardA, cardB)
-        return cardA.key === cardB.key;
+        
+        return this.selectedCards[0].key === this.selectedCards[1].key;
     }
 
     _generateCard(position, key) {
-        new Card({ 
+        return new Card({ 
             key, 
             gameScene: this.scene, 
             ...position, 
@@ -84,8 +83,7 @@ export default class Board {
 
     _assignCardsPosition() {
         const positions = this._calculatePositions()
-        const imageNames = this.cards.map(entry => entry.name)
-
+        const imageNames = this.baseCards.map(entry => entry.name)
         while (positions.length) {
             const posA = positions.splice(getRandomInt(positions.length), 1)[0];
             const posB = positions.splice(getRandomInt(positions.length), 1)[0];
@@ -95,7 +93,7 @@ export default class Board {
     }
 
     _getPairs() {
-        return this.cards.length
+        return this.baseCards.length
     }
     _getTotalCards() {
         return this._getPairs() * 2
@@ -128,8 +126,14 @@ export default class Board {
         this._assignCardsPosition()
     }
 
+    _restart() {
+        EventHandler.removeListener('card::click')
+        EventHandler.removeListener('game::restart')
+        this.cards.forEach(card => card.reset())
+    }
     _addListeners() {
         EventHandler.on('card::click', this._onClickCard, this)
+        EventHandler.on('game::restart', this._restart, this);
     }
 
     create() {

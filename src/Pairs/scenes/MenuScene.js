@@ -8,7 +8,7 @@ export default class MenuScene extends Phaser.Scene {
     }
 
     _onClickStart() {
-        EventHandler.emit('start');
+        EventHandler.emit('menu::start');
 
     }
 
