@@ -3,6 +3,7 @@ import CardGameScene from './scenes/CardGameScene';
 import MenuScene from './scenes/MenuScene';
 import EventHandler from '../services/services.events';
 import EndScene from './scenes/EndScene';
+import { colors } from '../theme/index'
 export default class Game extends Phaser.Game {
 
     constructor() {
@@ -14,6 +15,7 @@ export default class Game extends Phaser.Game {
                 autoCenter: Scale.CENTER_BOTH,
                 height: window.innerHeight * window.devicePixelRatio,
             },
+            backgroundColor: colors.background,
             physics: {
                 default: 'arcade',
                 arcade: {

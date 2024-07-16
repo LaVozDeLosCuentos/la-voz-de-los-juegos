@@ -56,8 +56,12 @@ export default class CardGameScene extends Phaser.Scene {
         
     }
 
-    _onFailGame() {
-        this.attempts--
+    _onFailGame({force} = {}) {
+        if (force) {
+            this.attempts = 0
+        } else {
+            this.attempts--
+        }
         if (this.attempts <= 0 ){
             EventHandler.emit('board::finish', {
                 success: false

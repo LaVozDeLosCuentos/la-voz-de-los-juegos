@@ -1,5 +1,5 @@
 import EventHandler from "../../services/services.events";
-
+import { centeredButton } from "../../utils/button.utils";
 export default class MenuScene extends Phaser.Scene {
     constructor() {
         super({
@@ -12,8 +12,10 @@ export default class MenuScene extends Phaser.Scene {
     }
 
     create() {
-        const start = this.add.text(100, 100, 'start', { fill: '#0f0' });
-        start.setInteractive();
-        start.on('pointerover', this._onClickStart);
+        centeredButton({
+            scene: this,
+            text: 'Iniciar',
+            callback: this._onClickStart
+        })
     }
 }

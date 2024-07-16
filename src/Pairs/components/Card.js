@@ -11,9 +11,9 @@ export default class Card {
     }
 
     _draw(x, y) {
-        this.image = this.gameScene.add.sprite(x, y, 'back-front-card').setInteractive();
+        this.image = this.gameScene.add.sprite(x, y, 'back-card').setInteractive();
         this.image.on('pointerdown', this._onClickHandler.bind(this));
-        this.image.setScale(0.2)
+        this.image.setScale(0.20)
         this.faceDown();
     }
 
@@ -24,7 +24,7 @@ export default class Card {
             targets: this.image,
             props: {
                 scaleX: { value: 0, duration: 100, yoyo: true },
-                texture: { value: 'back-front-card', duration: 100 }
+                texture: { value: 'back-card', duration: 100 }
             },
             ease: 'Linear'
         });

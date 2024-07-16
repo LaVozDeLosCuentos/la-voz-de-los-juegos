@@ -1,4 +1,5 @@
 import EventHandler from "../../services/services.events";
+import { centeredButton } from "../../utils/button.utils";
 
 export default class EndScene extends Phaser.Scene {
     constructor() {
@@ -16,8 +17,10 @@ export default class EndScene extends Phaser.Scene {
     }
 
     create() {
-        const start = this.add.text(100, 100, `${this.success} Restart?`, { fill: '#0f0' });
-        start.setInteractive();
-        start.on('pointerover', this._onClickRestart);
+        centeredButton({
+            scene: this,
+            text: `${this.success} Restart?`,
+            callback: this._onClickRestart
+        })
     }
 }

@@ -2,11 +2,12 @@ import Card from '../components/Card';
 import EventHandler from "../../services/services.events";
 
 import { getRandomInt } from '../../utils/random.util';
-const MAX_CARD_PER_LINE = 2;
-const H_OFFSET = 150;
-const V_OFFSET = 170;
-const INITIAL_X = 135;
-const INITIAL_Y = 170;
+import { centeredButton } from '../../utils/button.utils';
+const MAX_CARD_PER_LINE = 3;
+const H_OFFSET = 130;
+const V_OFFSET = 162;
+const INITIAL_X = 77;
+const INITIAL_Y = 130;
 export default class Board extends Phaser.GameObjects.Container{
     constructor({ scene, cards }) {
         super(scene)
@@ -136,14 +137,17 @@ export default class Board extends Phaser.GameObjects.Container{
         EventHandler.on('game::restart', this._restart, this);
     }
     _onClickStart(){
-        EventHandler.emit('board::fail')
+        this.attempts = 0
+        EventHandler.emit('board::fail', {force: true})
     }
 
     create() {
         this._drawBoard()
         this._addListeners()
-        const start = this.scene.add.text(200, 500, 'restart', { fill: '#0f0' });
-        start.setInteractive();
-        start.on('pointerover', this._onClickStart);
+        centeredButton({
+            scene: this.scene,
+            text: `Restart`,
+            callback: this._onClickStart
+        })
     }
 }
