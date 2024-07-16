@@ -1,6 +1,7 @@
 import Board from '../components/Board';
 import characters from '../../data/characters.json';
 import EventHandler from "../../services/services.events";
+import { centeredButton } from '../../utils/button.utils';
 
 const MAX_ATTEMPTS = 3
 const INIT_SCORE = {
@@ -56,12 +57,8 @@ export default class CardGameScene extends Phaser.Scene {
         
     }
 
-    _onFailGame({force} = {}) {
-        if (force) {
-            this.attempts = 0
-        } else {
-            this.attempts--
-        }
+    _onFailGame() {
+        this.attempts--
         if (this.attempts <= 0 ){
             EventHandler.emit('board::finish', {
                 success: false
@@ -102,9 +99,19 @@ export default class CardGameScene extends Phaser.Scene {
         this._addListeners()
     }
 
+    _forceRestart () {
+        this.attempts = 0
+        this._onFailGame()
+    }
+
     create() {
         this._once()
         this.attempts = MAX_ATTEMPTS;
         this.board.create()
+        centeredButton({
+            scene: this,
+            text: `Restart`,
+            callback: this._forceRestart.bind(this)
+        })
     }
 }

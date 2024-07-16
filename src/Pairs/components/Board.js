@@ -3,13 +3,17 @@ import EventHandler from "../../services/services.events";
 
 import { getRandomInt } from '../../utils/random.util';
 import { centeredButton } from '../../utils/button.utils';
-const MAX_CARD_PER_LINE = 3;
-const H_OFFSET = 130;
-const V_OFFSET = 162;
-const INITIAL_X = 77;
-const INITIAL_Y = 130;
+const CARD_WIDTH = 100;
+const CARD_HEIGHT = 120;
+const GAP = 5;
+const INITIAL_Y = (CARD_HEIGHT / 2) + GAP;
+
+const H_OFFSET = CARD_WIDTH + GAP;
+const V_OFFSET = CARD_HEIGHT + GAP;
+
 export default class Board extends Phaser.GameObjects.Container{
     constructor({ scene, cards }) {
+
         super(scene)
         this.cards = [];
         this.selectedCards = [];
@@ -17,6 +21,13 @@ export default class Board extends Phaser.GameObjects.Container{
         this.tweens = scene.tweens
         this.scene = scene
         this.baseCards = cards
+        this.cardWidth = CARD_WIDTH
+        this.cardHeight = CARD_HEIGHT
+        this.maxCardsPerLine = Math.floor(scene.cameras.main.displayWidth / H_OFFSET)
+        this.initialX = ((scene.cameras.main.displayWidth % H_OFFSET ) + CARD_WIDTH) / 2
+        console.log(this.initialX + CARD_WIDTH)
+        console.log(this.maxCardsPerLine)
+        console.log(scene.cameras.main.displayWidth)
     }
 
     init() {}
@@ -74,7 +85,9 @@ export default class Board extends Phaser.GameObjects.Container{
             key, 
             gameScene: this.scene, 
             ...position, 
-            tweens: this.tweens 
+            tweens: this.tweens ,
+            cardWidth: this.cardWidth,
+            cardHeight: this.cardHeight
         })
     }
 
@@ -102,7 +115,7 @@ export default class Board extends Phaser.GameObjects.Container{
 
     _calculateLines() {
         const TOTAL_CARDS = this._getTotalCards()
-        return TOTAL_CARDS / MAX_CARD_PER_LINE + ((TOTAL_CARDS / MAX_CARD_PER_LINE % MAX_CARD_PER_LINE ? 1 : 0));
+        return TOTAL_CARDS / this.maxCardsPerLine + ((TOTAL_CARDS / this.maxCardsPerLine % this.maxCardsPerLine ? 1 : 0));
     }
 
     _calculatePositions() {
@@ -110,10 +123,10 @@ export default class Board extends Phaser.GameObjects.Container{
         const lines = this._calculateLines()
         const positions = [];
         for (let line = 0; line < lines; line++) {
-            for (let pos = 0; pos < MAX_CARD_PER_LINE; pos++) {
+            for (let pos = 0; pos < this.maxCardsPerLine; pos++) {
                 if (cardsNumber > 0) {
                     positions.push({
-                        x: INITIAL_X + (H_OFFSET * pos),
+                        x: this.initialX + (H_OFFSET * pos),
                         y: INITIAL_Y + (V_OFFSET * line)
                     });
                 }
@@ -136,18 +149,9 @@ export default class Board extends Phaser.GameObjects.Container{
         EventHandler.on('card::click', this._onClickCard, this)
         EventHandler.on('game::restart', this._restart, this);
     }
-    _onClickStart(){
-        this.attempts = 0
-        EventHandler.emit('board::fail', {force: true})
-    }
 
     create() {
         this._drawBoard()
         this._addListeners()
-        centeredButton({
-            scene: this.scene,
-            text: `Restart`,
-            callback: this._onClickStart
-        })
     }
 }
