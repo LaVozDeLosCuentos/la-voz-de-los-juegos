@@ -31,13 +31,13 @@ export default class Board extends Phaser.GameObjects.Container{
 
     _onSuccessPair() {
         if (!this.cards.some((card) => card.state === 0)) {
-            setTimeout(() => EventHandler.emit('board::success'), 500)
+            EventHandler.emit('board::success')
         }
     }
 
     _onErrorPair() {
-        EventHandler.emit('board::fail')
         this._faceCardsDown();
+        EventHandler.emit('board::fail')
     }
 
     _onNewAttempt() {
@@ -56,7 +56,7 @@ export default class Board extends Phaser.GameObjects.Container{
             this.selectedCards.length = 0;
             this.waitForNewRound = false;
             this._onNewAttempt()
-        }, 1000);
+        }, 600);
     }
 
     _faceCardsDown() {
@@ -135,9 +135,15 @@ export default class Board extends Phaser.GameObjects.Container{
         EventHandler.on('card::click', this._onClickCard, this)
         EventHandler.on('game::restart', this._restart, this);
     }
+    _onClickStart(){
+        EventHandler.emit('board::fail')
+    }
 
     create() {
         this._drawBoard()
         this._addListeners()
+        const start = this.scene.add.text(200, 500, 'restart', { fill: '#0f0' });
+        start.setInteractive();
+        start.on('pointerover', this._onClickStart);
     }
 }

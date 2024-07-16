@@ -2,6 +2,7 @@ import Board from '../components/Board';
 import characters from '../../data/characters.json';
 import EventHandler from "../../services/services.events";
 
+const MAX_ATTEMPTS = 3
 const INIT_SCORE = {
     label: "",
     current: 0,
@@ -15,8 +16,7 @@ export default class CardGameScene extends Phaser.Scene {
             key: 'CardGameScene'
         });
         this.score = {...INIT_SCORE}
-        this.attempts = 0;
-
+        this.attempts = MAX_ATTEMPTS
         this.board
         this.characters = characters
     }
@@ -28,11 +28,13 @@ export default class CardGameScene extends Phaser.Scene {
             scene: this,
             cards: this.characters
         })
+        this._createUX()
     }
 
     _createUX() {
         this._createScore()
     }
+
     _loadAssets() {
         characters.map((entry) => {
             this.load.image(`card-${entry.name}`, entry.img);
@@ -48,16 +50,19 @@ export default class CardGameScene extends Phaser.Scene {
     }
 
     _onSuccessGame() {
-        setTimeout(() => {
-            EventHandler.emit('game::finish', {
-                success: true
-            })
-        }, 1000)
+        EventHandler.emit('board::finish', {
+            success: true
+        })
         
     }
 
     _onFailGame() {
-        
+        this.attempts--
+        if (this.attempts <= 0 ){
+            EventHandler.emit('board::finish', {
+                success: false
+            })
+        }
     }
 
     _onMatch() {
@@ -75,13 +80,9 @@ export default class CardGameScene extends Phaser.Scene {
         });
     }
 
-    _onAttempt() {
-        console.log('attempt')
-    }
+    _onAttempt() {}
 
-    _restart() {
-        
-    }
+    _restart() {}
 
     _addListeners() {
         EventHandler.on('board::attempt', this._onAttempt, this)
@@ -99,8 +100,7 @@ export default class CardGameScene extends Phaser.Scene {
 
     create() {
         this._once()
-        this.attempts = 0;
-        this._createScore()
+        this.attempts = MAX_ATTEMPTS;
         this.board.create()
     }
 }

@@ -2,7 +2,7 @@ import Phaser, { AUTO, Scale } from 'phaser';
 import CardGameScene from './scenes/CardGameScene';
 import MenuScene from './scenes/MenuScene';
 import EventHandler from '../services/services.events';
-import EndScene from './scenes/EndGame';
+import EndScene from './scenes/EndScene';
 export default class Game extends Phaser.Game {
 
     constructor() {
@@ -25,8 +25,6 @@ export default class Game extends Phaser.Game {
         super(config);
         this._addListeners()
         this.init()
-        
-
     }
 
     _onRestart() {
@@ -38,18 +36,18 @@ export default class Game extends Phaser.Game {
         this.scene.stop('MenuScene')
         this.scene.start('CardGameScene')
     }
-    _onEnd() {
+    _onEnd(params) {
         this.scene.stop('CardGameScene')
-        this.scene.start('EndScene')
+        this.scene.start('EndScene', params)
     }
 
     _addListeners() {
         EventHandler.on('menu::start', this._onStart, this);
         EventHandler.on('end::restart', this._onRestart, this);
-        EventHandler.on('board::success', this._onEnd, this);
+        EventHandler.on('board::finish', this._onEnd, this);
     }
     init() {
-        setTimeout(() => this._onStart(), 100)
+      //  setTimeout(() => this._onStart(), 100)
     }
     
 }
