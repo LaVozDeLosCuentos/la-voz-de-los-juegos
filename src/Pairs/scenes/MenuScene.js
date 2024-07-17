@@ -12,7 +12,10 @@ export default class MenuScene extends Phaser.Scene {
   }
 
   _loadAssets() {
-    this.load.image('logo', `assets/games/emparejados.png`);
+    this.load.image(
+      'logo',
+      '/la-voz-de-los-cuentos-games/assets/games/emparejados.png',
+    );
   }
   _onClickStart() {
     EventHandler.emit('menu::start');

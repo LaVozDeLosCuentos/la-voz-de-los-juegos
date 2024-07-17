@@ -17,8 +17,14 @@ export default class EndScene extends Phaser.Scene {
   }
 
   _loadAssets() {
-    this.load.image('complete', `assets/ux/complete.png`);
-    this.load.image('try-again', `assets/ux/try-again.png`);
+    this.load.image(
+      'complete',
+      `/la-voz-de-los-cuentos-games/assets/ux/complete.png`,
+    );
+    this.load.image(
+      'try-again',
+      `/la-voz-de-los-cuentos-games/assets/ux/try-again.png`,
+    );
   }
 
   _onClickRestart() {

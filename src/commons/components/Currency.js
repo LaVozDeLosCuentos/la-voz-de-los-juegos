@@ -4,6 +4,9 @@ export default class Currency extends Phaser.GameObjects.Sprite {
   }
 
   static preload(scene) {
-    scene.load.image('currency', `assets/ux/curreny.png`);
+    scene.load.image(
+      'currency',
+      `/la-voz-de-los-cuentos-games/assets/ux/curreny.png`,
+    );
   }
 }
