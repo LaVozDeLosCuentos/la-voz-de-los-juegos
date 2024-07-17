@@ -16,13 +16,13 @@ export default [
         clearTimeout: 'readonly',
         setInterval: 'readonly',
         clearInterval: 'readonly',
-        Phaser: 'readonly'
+        Phaser: 'readonly',
       },
     },
     plugins: {
       prettier: prettierPlugin,
     },
-    
+
     rules: {
       ...js.configs.recommended.rules,
       ...prettier.rules,

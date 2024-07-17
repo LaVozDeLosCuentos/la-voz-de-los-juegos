@@ -51,5 +51,3 @@ export default class Game extends Phaser.Game {
     //setTimeout(() => this._onStart(), 100)
   }
 }
-
-window.game = new Game();
