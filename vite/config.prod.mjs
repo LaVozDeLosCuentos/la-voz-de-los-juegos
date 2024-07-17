@@ -1,11 +1,11 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
-import copy from 'vite-plugin-copy';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 const msg = "Building LaVozDeLosCuentosGames project...";
 
 export default defineConfig({
-  base: '',
+  base: '',  // Asegúrate de que esta línea esté presente y correcta
   build: {
     lib: {
       entry: resolve(__dirname, '../src/index.js'),
@@ -23,9 +23,12 @@ export default defineConfig({
   },
   publicDir: resolve(__dirname, '../public'),
   plugins: [
-    copy({
+    viteStaticCopy({
       targets: [
-        { src: 'public/assets/*', dest: 'dist/assets' } // Copia los assets al directorio de destino
+        {
+          src: 'public/assets',
+          dest: 'assets'
+        }
       ]
     }),
     {
