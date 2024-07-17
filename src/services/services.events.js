@@ -1,4 +1,4 @@
-import Phaser from "phaser"
-const EventHandler = new Phaser.Events.EventEmitter()
+import Phaser from 'phaser';
+const EventHandler = new Phaser.Events.EventEmitter();
 
-export default EventHandler
+export default EventHandler;

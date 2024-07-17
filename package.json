@@ -1,20 +1,26 @@
 {
-    "name": "la-voz-de-los-cuentos-games",
-    "description": "Juegos de la página LaVozDeLosCuentos",
-    "version": "0.0.1",
-    "type": "module",
-    "author": "jjlmoya",
-    "scripts": {
-        "dev": "vite --config vite/config.dev.mjs",
-        "build": "vite build --config vite/config.prod.mjs",
-        "characters": "node ./scripts/characters.js"
-
-    },
-    "devDependencies": {
-        "terser": "^5.31.0",
-        "vite": "^5.3.1"
-    },
-    "dependencies": {
-        "phaser": "^3.80.1"
-    }
+  "name": "la-voz-de-los-cuentos-games",
+  "description": "Juegos de la página LaVozDeLosCuentos",
+  "version": "0.0.1",
+  "type": "module",
+  "author": "jjlmoya",
+  "scripts": {
+    "dev": "vite --config vite/config.dev.mjs",
+    "build": "vite build --config vite/config.prod.mjs",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "characters": "node ./scripts/characters.js"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.7.0",
+    "eslint": "^9.7.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "prettier": "^3.3.3",
+    "terser": "^5.31.0",
+    "vite": "^5.3.1"
+  },
+  "dependencies": {
+    "phaser": "^3.80.1"
+  }
 }
