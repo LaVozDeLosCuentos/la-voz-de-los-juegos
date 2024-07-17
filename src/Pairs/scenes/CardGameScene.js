@@ -2,24 +2,17 @@ import Board from '../components/Board';
 import characters from '../../data/characters.json';
 import EventHandler from "../../services/services.events";
 import { centeredButton } from '../../utils/button.utils';
+import Life from '../components/Life';
 
-const MAX_ATTEMPTS = 3
-const INIT_SCORE = {
-    label: "",
-    current: 0,
-    new: 0,
-    actionPoints: 5,
-    element: {}
-}
+const MAX_ATTEMPTS = 2
 export default class CardGameScene extends Phaser.Scene {
     constructor() {
         super({
             key: 'CardGameScene'
         });
-        this.score = {...INIT_SCORE}
-        this.attempts = MAX_ATTEMPTS
         this.board
         this.characters = characters
+        this.life
     }
 
     init() { }
@@ -29,12 +22,9 @@ export default class CardGameScene extends Phaser.Scene {
             scene: this,
             cards: this.characters
         })
-        this._createUX()
+        Life.preload(this)
     }
 
-    _createUX() {
-        this._createScore()
-    }
 
     _loadAssets() {
         characters.map((entry) => {
@@ -45,73 +35,70 @@ export default class CardGameScene extends Phaser.Scene {
         this.load.image('card-bg', `assets/cards/default.png`);
     }
 
-    _createScore() {
-        var style = { font: 'bold 16px', fill: '#fff', boundsAlignH: 'center', boundsAlignV: 'middle' };
-        this.score.element = this.add.text(16, 16, `${this.score.label} ${this.score.current}`, style);
+    _createRestartDebugButton() {
+        centeredButton({
+            scene: this,
+            text: `Restart`,
+            callback: this._forceRestart.bind(this)
+        })
+    }
+
+    _createUX() {
+        this.life = new Life({ scene: this, attempts: MAX_ATTEMPTS })
     }
 
     _onSuccessGame() {
         EventHandler.emit('board::finish', {
             success: true
         })
-        
     }
 
+  
+    _onGameOver() {
+        EventHandler.emit('board::finish', {
+            success: false
+        })
+    }
     _onFailGame() {
-        this.attempts--
-        if (this.attempts <= 0 ){
-            EventHandler.emit('board::finish', {
-                success: false
-            })
-        }
+        EventHandler.emit('life::lost')
     }
 
     _onMatch() {
-        this.score.new = this.score.current + this.score.actionPoints
-        this.tweens.addCounter({
-            from: this.score.current,
-            to: this.score.new,
-            duration: 100,
-            ease: 'linear',
-            onUpdate: tween => {
-                const value = Math.round(tween.getValue());
-                this.score.element.setText(`${this.score.label} ${value}`);
-                this.score.current = value
-            }
-        });
     }
 
     _onAttempt() {}
 
-    _restart() {}
+
 
     _addListeners() {
         EventHandler.on('board::attempt', this._onAttempt, this)
         EventHandler.on('board::success', this._onSuccessGame, this)
         EventHandler.on('board::fail', this._onFailGame, this)
         EventHandler.on('board::match', this._onMatch, this)
-        EventHandler.on('game::restart', this._restart, this);
-    }
-
-    _once() {
-        if(this.created) return
-        this.created = true 
-        this._addListeners()
+        EventHandler.on('life::dead', this._onGameOver, this);
     }
 
     _forceRestart () {
-        this.attempts = 0
         this._onFailGame()
     }
 
     create() {
-        this._once()
-        this.attempts = MAX_ATTEMPTS;
         this.board.create()
-        centeredButton({
-            scene: this,
-            text: `Restart`,
-            callback: this._forceRestart.bind(this)
-        })
+        this._createUX()
+        this.life.create()
+        this._addListeners()
+        this.events.on('shutdown', this._onShutdown, this);
+    }
+
+    _onShutdown() {
+        EventHandler.off('board::attempt')
+        EventHandler.off('board::success')
+        EventHandler.off('board::fail')
+        EventHandler.off('board::match')
+        EventHandler.off('life::dead')
+        if (this.life) {
+            this.life.destroy();
+            this.life = null;
+        }
     }
 }

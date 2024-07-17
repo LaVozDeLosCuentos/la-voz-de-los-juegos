@@ -49,7 +49,7 @@ export default class Game extends Phaser.Game {
         EventHandler.on('board::finish', this._onEnd, this);
     }
     init() {
-      //  setTimeout(() => this._onStart(), 100)
+      //setTimeout(() => this._onStart(), 100)
     }
     
 }

@@ -3,7 +3,8 @@ export const colors = {
     text: {
         primary: '#187e58',
         secondary: '#FF6F61',
-        title: '#450505'
+        title: '#450505',
+        white: '#FFFFFF'
     }
 }
 

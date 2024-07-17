@@ -1,8 +1,7 @@
 import Card from '../components/Card';
 import EventHandler from "../../services/services.events";
-
 import { getRandomInt } from '../../utils/random.util';
-import { centeredButton } from '../../utils/button.utils';
+
 const CARD_WIDTH = 100;
 const CARD_HEIGHT = 120;
 const GAP = 5;
@@ -12,8 +11,7 @@ const H_OFFSET = CARD_WIDTH + GAP;
 const V_OFFSET = CARD_HEIGHT + GAP;
 
 export default class Board extends Phaser.GameObjects.Container{
-    constructor({ scene, cards }) {
-
+    constructor({ scene, cards, headingHeight = 50 }) {
         super(scene)
         this.cards = [];
         this.selectedCards = [];
@@ -25,9 +23,7 @@ export default class Board extends Phaser.GameObjects.Container{
         this.cardHeight = CARD_HEIGHT
         this.maxCardsPerLine = Math.floor(scene.cameras.main.displayWidth / H_OFFSET)
         this.initialX = ((scene.cameras.main.displayWidth % H_OFFSET ) + CARD_WIDTH) / 2
-        console.log(this.initialX + CARD_WIDTH)
-        console.log(this.maxCardsPerLine)
-        console.log(scene.cameras.main.displayWidth)
+        this.initialY = INITIAL_Y + headingHeight
     }
 
     init() {}
@@ -127,7 +123,7 @@ export default class Board extends Phaser.GameObjects.Container{
                 if (cardsNumber > 0) {
                     positions.push({
                         x: this.initialX + (H_OFFSET * pos),
-                        y: INITIAL_Y + (V_OFFSET * line)
+                        y: this.initialY + (V_OFFSET * line)
                     });
                 }
                 cardsNumber--;
