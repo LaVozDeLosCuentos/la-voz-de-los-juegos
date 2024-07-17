@@ -4,12 +4,12 @@
   "version": "0.6.0",
   "type": "module",
   "author": "jjlmoya",
-  "main": "dist/lavozdeloscuentosgames.cjs.js",
-  "module": "dist/lavozdeloscuentosgames.es.js",
+  "main": "dist/la-voz-de-los-cuentos-games.cjs.js",
+  "module": "dist/la-voz-de-los-cuentos-games.es.js",
   "exports": {
     ".": {
-      "import": "./dist/lavozdeloscuentosgames.es.js",
-      "require": "./dist/lavozdeloscuentosgames.cjs.js"
+      "import": "./dist/la-voz-de-los-cuentos-games.es.js",
+      "require": "./dist/la-voz-de-los-cuentos-games.cjs.js"
     }
   },
   "scripts": {
