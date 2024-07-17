@@ -10,49 +10,49 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 'lts/*'
-        registry-url: 'https://registry.npmjs.org/'
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
+          registry-url: 'https://registry.npmjs.org/'
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm install
 
-    - name: Authenticate with private NPM package
-      run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+      - name: Authenticate with private NPM package
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
-    - name: Build the library
-      run: npm run build
+      - name: Build the library
+        run: npm run build
 
-    - name: Bump version
-      id: bump_version
-      run: |
-        git config --global user.email "juanjo19089@gmail.com"
-        git config --global user.name "jjlmoya"
-        CURRENT_VERSION=$(node -p "require('./package.json').version")
-        NEW_VERSION=$(npm version minor --no-git-tag-version)
-        echo "New version: $NEW_VERSION"
-        echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
-        git commit -am "chore(release): $NEW_VERSION [skip ci]"
-        git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
+      - name: Bump version
+        id: bump_version
+        run: |
+          git config --global user.email "juanjo19089@gmail.com"
+          git config --global user.name "jjlmoya"
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          NEW_VERSION=$(npm version minor --no-git-tag-version)
+          echo "New version: $NEW_VERSION"
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          git commit -am "chore(release): $NEW_VERSION [skip ci]"
+          git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
 
-    - name: Pull changes
-      run: git pull origin main
+      - name: Pull changes
+        run: git pull origin main
 
-    - name: Push changes
-      run: |
-        git push origin HEAD:main
-        git push origin --tags
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push changes
+        run: |
+          git push origin HEAD:main
+          git push origin --tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Publish to npm
-      run: npm publish
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

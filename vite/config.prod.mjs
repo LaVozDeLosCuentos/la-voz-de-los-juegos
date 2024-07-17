@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
-const msg = "Building LaVozDeLosCuentosGames project...";
+const msg = 'Building LaVozDeLosCuentosGames project...';
 
 export default defineConfig({
   build: {

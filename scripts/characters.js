@@ -1,7 +1,13 @@
 import { readdir, writeFile } from 'fs/promises';
 import { join, basename, extname } from 'path';
 
-const charactersDir = join(process.cwd(), 'public', 'la-voz-de-los-cuentos-games', 'assets', 'characters');
+const charactersDir = join(
+  process.cwd(),
+  'public',
+  'la-voz-de-los-cuentos-games',
+  'assets',
+  'characters',
+);
 const outputFilePath = join(process.cwd(), 'src', 'data', 'characters.json');
 
 async function generateCharacters() {
