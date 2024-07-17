@@ -1,4 +1,5 @@
 import EventHandler from '../../services/services.events';
+import { pathSprite } from '../../utils/sprite.utils';
 
 export default class Life extends Phaser.GameObjects.Sprite {
   constructor({ scene, attempts }) {
@@ -6,20 +7,10 @@ export default class Life extends Phaser.GameObjects.Sprite {
     this.scene = scene;
     this.attempts = attempts;
   }
-
   static preload(scene) {
-    scene.load.image(
-      'heart-full',
-      `/la-voz-de-los-cuentos-games/assets/ux/hearts/full.png`,
-    );
-    scene.load.image(
-      'heart-empty',
-      `/la-voz-de-los-cuentos-games/assets/ux/hearts/empty.png`,
-    );
-    scene.load.image(
-      'heart-half',
-      `/la-voz-de-los-cuentos-games/assets/ux/hearts/half.png`,
-    );
+    scene.load.image('heart-full', `${pathSprite}/ux/hearts/full.png`);
+    scene.load.image('heart-empty', `${pathSprite}/ux/hearts/empty.png`);
+    scene.load.image('heart-half', `${pathSprite}/ux/hearts/half.png`);
   }
 
   addListeners() {

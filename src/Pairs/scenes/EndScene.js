@@ -1,6 +1,7 @@
 import EventHandler from '../../services/services.events';
 import { centeredButton } from '../../utils/button.utils';
 import { centeredX, centeredY } from '../../utils/position.utils';
+import { pathSprite } from '../../utils/sprite.utils';
 
 export default class EndScene extends Phaser.Scene {
   constructor() {
@@ -17,14 +18,8 @@ export default class EndScene extends Phaser.Scene {
   }
 
   _loadAssets() {
-    this.load.image(
-      'complete',
-      `/la-voz-de-los-cuentos-games/assets/ux/complete.png`,
-    );
-    this.load.image(
-      'try-again',
-      `/la-voz-de-los-cuentos-games/assets/ux/try-again.png`,
-    );
+    this.load.image('complete', `${pathSprite}/ux/complete.png`);
+    this.load.image('try-again', `${pathSprite}/ux/try-again.png`);
   }
 
   _onClickRestart() {

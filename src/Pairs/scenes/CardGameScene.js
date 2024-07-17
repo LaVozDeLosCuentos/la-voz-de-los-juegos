@@ -3,6 +3,7 @@ import characters from '../../data/characters.json';
 import EventHandler from '../../services/services.events';
 import { centeredButton } from '../../utils/button.utils';
 import Life from '../../commons/components/Life';
+import { pathSprite } from '../../utils/sprite.utils';
 
 const MAX_ATTEMPTS = 6;
 export default class CardGameScene extends Phaser.Scene {
@@ -29,18 +30,12 @@ export default class CardGameScene extends Phaser.Scene {
     characters.map((entry) => {
       this.load.image(`card-${entry.name}`, entry.img);
     });
-    this.load.image(
-      'back-card',
-      `/la-voz-de-los-cuentos-games/assets/cards/back-card.png`,
-    );
+    this.load.image('back-card', `${pathSprite}/cards/back-card.png`);
     this.load.image(
       'back-front-card',
-      `/la-voz-de-los-cuentos-games/assets/cards/back-front-card.png`,
+      `${pathSprite}/cards/back-front-card.png`,
     );
-    this.load.image(
-      'card-bg',
-      `/la-voz-de-los-cuentos-games/assets/cards/default.png`,
-    );
+    this.load.image('card-bg', `${pathSprite}/cards/default.png`);
   }
 
   _createRestartDebugButton() {
