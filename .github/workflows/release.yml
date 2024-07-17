@@ -1,4 +1,4 @@
-name: Bump Version and Publish
+name: Release and Publish to npm
 
 on:
   push:
@@ -6,37 +6,41 @@ on:
       - main
 
 jobs:
-  bump-version:
+  release:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 'lts/*'
-        registry-url: 'https://registry.npmjs.org/'
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          registry-url: 'https://registry.npmjs.org/'
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm install
 
-    - name: Bump version
-      id: bump_version
-      run: |
-        git config --global user.email "juanjo19089@gmail.com"
-        git config --global user.name "jjlmoya"
-        CURRENT_VERSION=$(node -p "require('./package.json').version")
-        NEW_VERSION=$(npm version minor --no-git-tag-version)
-        echo "New version: $NEW_VERSION"
-        echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
-        git commit -am "chore(release): $NEW_VERSION [skip ci]"
-        git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
+      - name: Bump version and create changelog
+        id: bump_version
+        run: |
+          git config --global user.email "juanjo1989@gmail.com"
+          git config --global user.name "jjlmoya"
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          NEW_VERSION=$(npm version minor --no-git-tag-version)
+          echo "New version: $NEW_VERSION"
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          git commit -am "chore(release): $NEW_VERSION [skip ci]"
+          git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
 
-    - name: Push changes
-      run: |
-        git push origin HEAD:main
-        git push origin --tags
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tags: true
+
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
