@@ -4,6 +4,14 @@
   "version": "0.4.0",
   "type": "module",
   "author": "jjlmoya",
+  "main": "dist/lavozdeloscuentosgames.cjs.js",
+  "module": "dist/lavozdeloscuentosgames.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/lavozdeloscuentosgames.es.js",
+      "require": "./dist/lavozdeloscuentosgames.cjs.js"
+    }
+  },
   "scripts": {
     "dev": "vite --config vite/config.dev.mjs",
     "build": "vite build --config vite/config.prod.mjs",

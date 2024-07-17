@@ -1,43 +1,33 @@
 import { defineConfig } from 'vite';
+import { resolve } from 'path';
 
-const phasermsg = () => {
-  return {
-    name: 'phasermsg',
-    buildStart() {
-      process.stdout.write(`Building for production...\n`);
-    },
-    buildEnd() {
-      const line = '---------------------------------------------------------';
-      process.stdout.write(`${line}\n${msg}\n${line}\n`);
-      process.stdout.write(`✨ Done ✨\n`);
-    },
-  };
-};
+const msg = "Building Phaser project..."; // Asegúrate de definir la variable msg
 
 export default defineConfig({
-  base: './',
-  logLevel: 'warning',
   build: {
+    lib: {
+      entry: resolve(__dirname, '../src/index.js'),
+      name: 'LaVozDeLosCuentosGames',
+      formats: ['es', 'cjs', 'umd'],
+      fileName: (format) => `lavozdeloscuentosgames.${format}.js`,
+    },
     rollupOptions: {
+      // Asegúrate de externalizar dependencias que no quieres incluir en tu bundle
+      external: ['phaser'],
       output: {
-        manualChunks: {
-          phaser: ['phaser'],
+        // Proporciona variables globales para usar en el caso de formato UMD
+        globals: {
+          phaser: 'Phaser',
         },
       },
     },
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        passes: 2,
-      },
-      mangle: true,
-      format: {
-        comments: false,
+  },
+  plugins: [
+    {
+      name: 'phasermsg',
+      buildEnd() {
+        console.log(msg); // Utiliza la variable msg que definimos
       },
     },
-  },
-  server: {
-    port: 8080,
-  },
-  plugins: [phasermsg()],
+  ],
 });
