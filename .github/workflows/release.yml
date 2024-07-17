@@ -27,6 +27,9 @@ jobs:
     - name: Authenticate with private NPM package
       run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
+    - name: Build the library
+      run: npm run build
+
     - name: Bump version
       id: bump_version
       run: |
