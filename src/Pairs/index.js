@@ -11,6 +11,7 @@ class Game extends Phaser.Game {
   constructor() {
     var config = {
       type: AUTO,
+      parent: 'game-container',
       scale: {
         mode: Scale.RESIZE,
         width: window.innerWidth * window.devicePixelRatio,

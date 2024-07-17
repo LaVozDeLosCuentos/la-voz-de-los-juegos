@@ -12,7 +12,7 @@ async function generateCharacters() {
       .map((file, index) => ({
         id: index + 1,
         name: basename(file, extname(file)),
-        img: `./assets/characters/${file}`,
+        img: `../assets/characters/${file}`,
       }));
 
     await writeFile(outputFilePath, JSON.stringify(characters, null, 2));

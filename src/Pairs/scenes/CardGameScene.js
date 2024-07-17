@@ -29,9 +29,9 @@ export default class CardGameScene extends Phaser.Scene {
     characters.map((entry) => {
       this.load.image(`card-${entry.name}`, entry.img);
     });
-    this.load.image('back-card', `./assets/cards/back-card.png`);
-    this.load.image('back-front-card', `./assets/cards/back-front-card.png`);
-    this.load.image('card-bg', `./assets/cards/default.png`);
+    this.load.image('back-card', `../assets/cards/back-card.png`);
+    this.load.image('back-front-card', `../assets/cards/back-front-card.png`);
+    this.load.image('card-bg', `../assets/cards/default.png`);
   }
 
   _createRestartDebugButton() {

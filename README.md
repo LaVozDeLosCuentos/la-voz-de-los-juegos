@@ -51,7 +51,7 @@ Vite supports loading assets via JavaScript module `import` statements.
 This template provides support for both embedding assets and also loading them from a static folder. To embed an asset, you can import it at the top of the JavaScript file you are using it in:
 
 ```js
-import logoImg from './assets/logo.png';
+import logoImg from '../assets/logo.png';
 ```
 
 To load static files such as audio files, videos, etc place them into the `public/assets` folder. Then you can use this path in the Loader calls within Phaser:
@@ -65,7 +65,7 @@ preload();
 
   //  This is an example of loading a static image
   //  from the public/assets folder:
-  this.load.image('background', './assets/bg.png');
+  this.load.image('background', '../assets/bg.png');
 }
 ```
 
