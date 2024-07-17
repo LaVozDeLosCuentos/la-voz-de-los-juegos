@@ -1,7 +1,7 @@
 {
   "name": "la-voz-de-los-cuentos-games",
   "description": "Juegos de la página LaVozDeLosCuentos",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "type": "module",
   "author": "jjlmoya",
   "main": "dist/lavozdeloscuentosgames.cjs.js",
