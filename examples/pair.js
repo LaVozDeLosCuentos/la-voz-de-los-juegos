@@ -1,3 +1,3 @@
-import { Pair } from "../src";
+import { Pair } from '../src';
 
 window.game = new Pair();
