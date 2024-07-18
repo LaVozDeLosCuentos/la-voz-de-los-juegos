@@ -92,7 +92,7 @@ export default class Board extends Phaser.GameObjects.Container {
   _generateCard(position, key) {
     return new Card({
       key,
-      gameScene: this.scene,
+      scene: this.scene,
       ...position,
       tweens: this.tweens,
       cardWidth: this.cardWidth,
