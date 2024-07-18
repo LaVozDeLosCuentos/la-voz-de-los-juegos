@@ -33,16 +33,18 @@
     <div id="app">
       <div id="game-container"></div>
     </div>
-      <script>
-        const getSize = () => {
-          const params = window.location.search
-          if (params) {
-            return params.split("?size=")[1]
-          }
+    <script>
+      const getSize = () => {
+        const params = window.location.search;
+        if (params) {
+          return params.split('?size=')[1];
         }
-        window.size = getSize()
-        document.getElementById("app").setAttribute('style', `width:${window.size}px`)
-      </script>
+      };
+      window.size = getSize();
+      document
+        .getElementById('app')
+        .setAttribute('style', `width:${window.size}px`);
+    </script>
     <script type="module" src="examples/pair.js"></script>
   </body>
 </html>

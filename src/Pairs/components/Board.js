@@ -9,9 +9,6 @@ const GAP = 5;
 
 export default class Board extends Phaser.GameObjects.Container {
   constructor({ scene, cards, headingHeight = 50 }) {
-    console.log({
-      a: scene.cameras.main,
-    });
     super(scene);
     this.cards = [];
     this.selectedCards = [];
