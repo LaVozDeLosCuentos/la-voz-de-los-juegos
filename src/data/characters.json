@@ -1,22 +1,27 @@
 [
   {
     "id": 1,
-    "name": "llamarada",
-    "img": "/la-voz-de-los-cuentos-games/assets/characters/llamarada.png"
+    "name": "scene1",
+    "img": "/la-voz-de-los-cuentos-games/assets/characters/scene1.png"
   },
   {
     "id": 2,
-    "name": "samurai",
-    "img": "/la-voz-de-los-cuentos-games/assets/characters/samurai.png"
+    "name": "scene2",
+    "img": "/la-voz-de-los-cuentos-games/assets/characters/scene2.png"
   },
   {
     "id": 3,
-    "name": "test1",
-    "img": "/la-voz-de-los-cuentos-games/assets/characters/test1.png"
+    "name": "scene3",
+    "img": "/la-voz-de-los-cuentos-games/assets/characters/scene3.png"
   },
   {
     "id": 4,
-    "name": "test2",
-    "img": "/la-voz-de-los-cuentos-games/assets/characters/test2.png"
+    "name": "scene4",
+    "img": "/la-voz-de-los-cuentos-games/assets/characters/scene4.png"
+  },
+  {
+    "id": 5,
+    "name": "scene5",
+    "img": "/la-voz-de-los-cuentos-games/assets/characters/scene5.png"
   }
 ]

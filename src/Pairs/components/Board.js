@@ -6,10 +6,6 @@ import { getRandomInt } from '../../utils/random.util';
 const CARD_WIDTH = 100;
 const CARD_HEIGHT = 120;
 const GAP = 5;
-const INITIAL_Y = CARD_HEIGHT / 2 + GAP;
-
-const H_OFFSET = CARD_WIDTH + GAP;
-const V_OFFSET = CARD_HEIGHT + GAP;
 
 export default class Board extends Phaser.GameObjects.Container {
   constructor({ scene, cards, headingHeight = 50 }) {
@@ -22,16 +18,28 @@ export default class Board extends Phaser.GameObjects.Container {
     this.baseCards = cards;
     this.cardWidth = CARD_WIDTH;
     this.cardHeight = CARD_HEIGHT;
-    this.maxCardsPerLine = Math.floor(
-      scene.cameras.main.displayWidth / H_OFFSET,
-    );
+    this.scale = 1;
+    this._adjustCardSize(scene);
     this.initialX =
-      ((scene.cameras.main.displayWidth % H_OFFSET) + CARD_WIDTH) / 2;
-    this.initialY = INITIAL_Y + headingHeight;
+      ((scene.cameras.main.displayWidth % (this.cardWidth + GAP)) +
+        this.cardWidth) /
+      2;
+    this.initialY = this.cardHeight / 2 + GAP + headingHeight;
   }
 
   init() {}
 
+  _adjustCardSize(scene) {
+    this.cardWidth = CARD_WIDTH * this.scale;
+    this.cardHeight = CARD_HEIGHT * this.scale;
+    this.maxCardsPerLine = Math.floor(
+      scene.cameras.main.displayWidth / (this.cardWidth + GAP),
+    );
+    if (this.maxCardsPerLine > 5) {
+      this.scale += 0.25;
+      this._adjustCardSize(scene);
+    }
+  }
   _onClickCard(card) {
     if (this.waitForNewRound || card.state) {
       return;
@@ -134,8 +142,8 @@ export default class Board extends Phaser.GameObjects.Container {
       for (let pos = 0; pos < this.maxCardsPerLine; pos++) {
         if (cardsNumber > 0) {
           positions.push({
-            x: this.initialX + H_OFFSET * pos,
-            y: this.initialY + V_OFFSET * line,
+            x: this.initialX + (this.cardWidth + GAP) * pos,
+            y: this.initialY + (this.cardHeight + GAP) * line,
           });
         }
         cardsNumber--;

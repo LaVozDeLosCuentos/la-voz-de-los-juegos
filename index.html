@@ -10,18 +10,41 @@
       onload="this.onload=null;this.rel='stylesheet'"
     />
   </head>
+
   <style>
     body {
       font-family: 'Fredoka', sans-serif;
       margin: 0;
+      background-color: blue;
+    }
+    #app {
+      display: grid;
+      border: 1px solid black;
+      padding: 16px;
+      margin: 16px auto;
+      justify-content: center;
+      align-items: center;
+      width: 300px;
+      height: 85dvh;
+      background-color: red;
     }
   </style>
   <body>
-    test
     <div id="app">
       <div id="game-container"></div>
     </div>
-    test
+    <script>
+      const getSize = () => {
+        const params = window.location.search;
+        if (params) {
+          return params.split('?size=')[1];
+        }
+      };
+      window.size = getSize();
+      document
+        .getElementById('app')
+        .setAttribute('style', `width:${window.size}px`);
+    </script>
     <script type="module" src="examples/pair.js"></script>
   </body>
 </html>

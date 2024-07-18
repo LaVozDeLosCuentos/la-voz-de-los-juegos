@@ -1,6 +1,7 @@
 import EventHandler from '../../services/services.events';
 import { centeredButton } from '../../utils/button.utils';
 import { centeredX, centeredY } from '../../utils/position.utils';
+import { pathSprite } from '../../utils/sprite.utils';
 export default class MenuScene extends Phaser.Scene {
   constructor() {
     super({
@@ -12,10 +13,7 @@ export default class MenuScene extends Phaser.Scene {
   }
 
   _loadAssets() {
-    this.load.image(
-      'logo',
-      '/la-voz-de-los-cuentos-games/assets/games/emparejados.png',
-    );
+    this.load.image('logo', `${pathSprite}/games/emparejados.png`);
   }
   _onClickStart() {
     EventHandler.emit('menu::start');
