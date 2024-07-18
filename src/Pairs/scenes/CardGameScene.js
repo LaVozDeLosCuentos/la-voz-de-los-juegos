@@ -31,10 +31,6 @@ export default class CardGameScene extends Phaser.Scene {
       this.load.image(`card-${entry.name}`, entry.img);
     });
     this.load.image('back-card', `${pathSprite}/cards/back-card.png`);
-    this.load.image(
-      'back-front-card',
-      `${pathSprite}/cards/back-front-card.png`,
-    );
     this.load.image('card-bg', `${pathSprite}/cards/default.png`);
   }
 
