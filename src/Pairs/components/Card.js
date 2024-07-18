@@ -16,7 +16,6 @@ export default class Card {
   _draw(x, y) {
     this.face = this.gameScene.add.sprite(x, y, `card-${this.key}`);
     this.face.setDisplaySize(this.cardWidth, this.cardHeight);
-    this.face.setInteractive();
     this.face.on('pointerdown', this._onClickHandler, this);
     this.faceScaleMax = this.face.scaleX;
     this.back = this.gameScene.add.sprite(x, y, 'back-card');
@@ -29,7 +28,7 @@ export default class Card {
       () => {
         this.faceDown();
       },
-      Math.floor(Math.random() * (1000 - 500 + 1)) + 500,
+      Math.floor(Math.random() * (2000 - 500 + 1)) + 500,
     );
   }
 

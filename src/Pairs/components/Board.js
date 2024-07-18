@@ -16,11 +16,10 @@ export default class Board extends Phaser.GameObjects.Container {
     this.tweens = scene.tweens;
     this.scene = scene;
     this.baseCards = cards;
-    this.cardWidth = CARD_WIDTH * 2.5;
-    this.cardHeight = CARD_HEIGHT * 2.5;
-    this.maxCardsPerLine = Math.floor(
-      scene.cameras.main.displayWidth / (this.cardWidth + GAP),
-    );
+    this.cardWidth = CARD_WIDTH;
+    this.cardHeight = CARD_HEIGHT;
+    this.scale = 1;
+    this._adjustCardSize(scene);
     this.initialX =
       ((scene.cameras.main.displayWidth % (this.cardWidth + GAP)) +
         this.cardWidth) /
@@ -30,6 +29,17 @@ export default class Board extends Phaser.GameObjects.Container {
 
   init() {}
 
+  _adjustCardSize(scene) {
+    this.cardWidth = CARD_WIDTH * this.scale;
+    this.cardHeight = CARD_HEIGHT * this.scale;
+    this.maxCardsPerLine = Math.floor(
+      scene.cameras.main.displayWidth / (this.cardWidth + GAP),
+    );
+    if (this.maxCardsPerLine > 5) {
+      this.scale += 0.25;
+      this._adjustCardSize(scene);
+    }
+  }
   _onClickCard(card) {
     if (this.waitForNewRound || card.state) {
       return;
