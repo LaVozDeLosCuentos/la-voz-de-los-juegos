@@ -8,7 +8,7 @@ const CARD_HEIGHT = 120;
 const GAP = 5;
 
 export default class Board extends Phaser.GameObjects.Container {
-  constructor({ scene, cards, headingHeight = 50 }) {
+  constructor({ scene, cards, headingHeight = 65 }) {
     super(scene);
     this.cards = [];
     this.selectedCards = [];

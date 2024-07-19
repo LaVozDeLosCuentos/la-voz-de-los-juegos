@@ -2,11 +2,12 @@ import Board from '../components/Board';
 import characters from '../../data/characters.json';
 import EventHandler from '../../services/services.events';
 import { centeredButton } from '../../utils/button.utils';
-import Life from '../../commons/components/Life';
+import Currency from '../../commons/components/Currency';
 import { pathSprite } from '../../utils/sprite.utils';
 import { pathMedia } from '../../utils/media.utils';
+import StatusBar from '../../commons/components/StatusBar';
+import Life from '../../commons/components/Life';
 
-const MAX_ATTEMPTS = 6;
 export default class CardGameScene extends Phaser.Scene {
   constructor() {
     super({
@@ -14,9 +15,9 @@ export default class CardGameScene extends Phaser.Scene {
     });
     this.board;
     this.characters = characters;
-    this.life;
     this.music;
     this.effects = {};
+    this.currency;
   }
 
   init() {}
@@ -27,6 +28,7 @@ export default class CardGameScene extends Phaser.Scene {
       cards: this.characters,
     });
     Life.preload(this);
+    Currency.preload(this);
   }
 
   _loadAssets() {
@@ -52,7 +54,7 @@ export default class CardGameScene extends Phaser.Scene {
   }
 
   _createUX() {
-    this.life = new Life({ scene: this, attempts: MAX_ATTEMPTS });
+    this.statusBar = new StatusBar(this, 0, 0);
   }
 
   _onSuccessGame() {
@@ -115,7 +117,7 @@ export default class CardGameScene extends Phaser.Scene {
   create() {
     this.board.create();
     this._createUX();
-    this.life.create();
+
     this._addListeners();
     this.events.on('shutdown', this._onShutdown, this);
     this._addMusic();
@@ -127,10 +129,7 @@ export default class CardGameScene extends Phaser.Scene {
     EventHandler.off('board::fail');
     EventHandler.off('board::match');
     EventHandler.off('life::dead');
-    if (this.life) {
-      this.life.destroy();
-      this.life = null;
-    }
+
     if (this.music) {
       this.music.destroy();
       this.music = null;

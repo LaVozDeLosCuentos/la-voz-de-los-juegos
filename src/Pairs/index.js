@@ -55,7 +55,7 @@ class Game extends Phaser.Game {
   }
 
   init() {
-    //setTimeout(() => this._onStart(), 100)
+    setTimeout(() => this._onStart(), 100);
   }
 }
 

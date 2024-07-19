@@ -9,7 +9,7 @@ export const title = {
 };
 
 export const button = {
-  fill: colors.text.white,
+  fill: colors.white,
   fontSize: font.size.h1,
   align: 'center',
   fontStyle: 'bold',

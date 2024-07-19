@@ -4,8 +4,8 @@ export const colors = {
     primary: '#187e58',
     secondary: '#FF6F61',
     title: '#450505',
-    white: '#FFFFFF',
   },
+  white: '#FFFFFF',
 };
 
 export const font = {

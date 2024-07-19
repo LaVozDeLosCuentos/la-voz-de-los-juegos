@@ -19,8 +19,10 @@ export default class MenuScene extends Phaser.Scene {
       'happy-dreamy-adventure',
       `${pathMedia}/bso/happy-dreamy-adventure.mp3`,
     );
+    this.load.audio('media.effect.button', `${pathMedia}/effects/button.mp3`);
   }
   _onClickStart() {
+    this.sound.add('media.effect.button').play();
     EventHandler.emit('menu::start');
   }
 
@@ -34,7 +36,7 @@ export default class MenuScene extends Phaser.Scene {
       scene: this,
       text: 'Iniciar',
       y: centeredY(this) + 100,
-      callback: this._onClickStart,
+      callback: this._onClickStart.bind(this),
     });
     this.image = this.add.sprite(
       centeredX(this),
