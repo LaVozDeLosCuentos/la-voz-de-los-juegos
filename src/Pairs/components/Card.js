@@ -1,24 +1,25 @@
 import EventHandler from '../../services/services.events';
 
 export default class Card {
-  constructor({ key, gameScene, x, y, cardWidth, cardHeight }) {
+  constructor({ key, scene, x, y, cardWidth, cardHeight }) {
     this.key = key;
-    this.gameScene = gameScene;
-    this.tweens = gameScene.tweens;
+    this.scene = scene;
+    this.tweens = scene.tweens;
     this.cardWidth = cardWidth;
     this.cardHeight = cardHeight;
     this.state = 1;
     this.faceScaleMax;
     this.backScaleMax;
+    this.effects = {};
     this._draw(x, y);
   }
 
   _draw(x, y) {
-    this.face = this.gameScene.add.sprite(x, y, `card-${this.key}`);
+    this.face = this.scene.add.sprite(x, y, `card-${this.key}`);
     this.face.setDisplaySize(this.cardWidth, this.cardHeight);
     this.face.on('pointerdown', this._onClickHandler, this);
     this.faceScaleMax = this.face.scaleX;
-    this.back = this.gameScene.add.sprite(x, y, 'back-card');
+    this.back = this.scene.add.sprite(x, y, 'back-card');
     this.back.setDisplaySize(this.cardWidth, this.cardHeight);
     this.back.on('pointerdown', this._onClickHandler, this);
     this.back.setInteractive();
@@ -61,21 +62,9 @@ export default class Card {
     });
   }
 
-  _onCompleteTween(rear) {
-    rear.image.scaleX = rear.scaleMax;
-  }
-
-  _onUpdateTween(tween, front, rear) {
-    if (tween.progress >= 0.5) {
-      rear.image.scaleX = rear.scaleMax * tween.progress;
-      front.image.setVisible(false);
-    } else {
-      rear.image.setVisible(true);
-      rear.image.scaleX = 0;
-    }
-  }
   faceUp() {
     if (this.state === 1) return;
+    this._flipCardEffect();
     this.state = 1;
     this.tweens.add({
       targets: this.back,
@@ -95,6 +84,25 @@ export default class Card {
         });
       },
     });
+  }
+
+  _onCompleteTween(rear) {
+    rear.image.scaleX = rear.scaleMax;
+  }
+
+  _onUpdateTween(tween, front, rear) {
+    if (tween.progress >= 0.5) {
+      rear.image.scaleX = rear.scaleMax * tween.progress;
+      front.image.setVisible(false);
+    } else {
+      rear.image.setVisible(true);
+      rear.image.scaleX = 0;
+    }
+  }
+
+  _flipCardEffect() {
+    this.effects.success = this.scene.sound.add('media.effect.flip');
+    this.effects.success.play({});
   }
 
   reset() {

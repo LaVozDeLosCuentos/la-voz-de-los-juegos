@@ -4,6 +4,7 @@ import EventHandler from '../../services/services.events';
 import { centeredButton } from '../../utils/button.utils';
 import Life from '../../commons/components/Life';
 import { pathSprite } from '../../utils/sprite.utils';
+import { pathMedia } from '../../utils/media.utils';
 
 const MAX_ATTEMPTS = 6;
 export default class CardGameScene extends Phaser.Scene {
@@ -14,6 +15,8 @@ export default class CardGameScene extends Phaser.Scene {
     this.board;
     this.characters = characters;
     this.life;
+    this.music;
+    this.effects = {};
   }
 
   init() {}
@@ -31,7 +34,13 @@ export default class CardGameScene extends Phaser.Scene {
       this.load.image(`card-${entry.name}`, entry.img);
     });
     this.load.image('back-card', `${pathSprite}/cards/back-card.png`);
-    this.load.image('card-bg', `${pathSprite}/cards/default.png`);
+    this.load.audio(
+      'dreamy-adventure',
+      `${pathMedia}/bso/dreamy-adventure.mp3`,
+    );
+    this.load.audio('media.effect.fail', `${pathMedia}/effects/fail.mp3`);
+    this.load.audio('media.effect.flip', `${pathMedia}/effects/flip.mp3`);
+    this.load.audio('media.effect.success', `${pathMedia}/effects/success.mp3`);
   }
 
   _createRestartDebugButton() {
@@ -57,12 +66,24 @@ export default class CardGameScene extends Phaser.Scene {
       success: false,
     });
   }
+  _failSound() {
+    if (!this.effects.fail) {
+      this.effects.fail = this.sound.add('media.effect.fail');
+    }
+    this.effects.fail.play({});
+  }
+  _successSound() {
+    this.effects.success = this.sound.add('media.effect.success');
+    this.effects.success.play({});
+  }
   _onFailGame() {
+    this._failSound();
     EventHandler.emit('life::lost');
   }
 
-  _onMatch() {}
-
+  _onMatch() {
+    this._successSound();
+  }
   _onAttempt() {}
 
   _addListeners() {
@@ -77,12 +98,27 @@ export default class CardGameScene extends Phaser.Scene {
     this._onFailGame();
   }
 
+  _addMusic() {
+    this.music = this.sound.add('dreamy-adventure');
+    this.music.play({ loop: true, volume: 0.03 });
+  }
+
+  toggleMute() {
+    this.isMuted = !this.isMuted;
+    if (this.isMuted) {
+      this.music.setMute(true);
+    } else {
+      this.music.setMute(false);
+    }
+  }
+
   create() {
     this.board.create();
     this._createUX();
     this.life.create();
     this._addListeners();
     this.events.on('shutdown', this._onShutdown, this);
+    this._addMusic();
   }
 
   _onShutdown() {
@@ -94,6 +130,10 @@ export default class CardGameScene extends Phaser.Scene {
     if (this.life) {
       this.life.destroy();
       this.life = null;
+    }
+    if (this.music) {
+      this.music.destroy();
+      this.music = null;
     }
   }
 }
