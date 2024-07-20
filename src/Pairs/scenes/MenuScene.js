@@ -1,14 +1,15 @@
+import EventScene from '../../commons/Class/EventScene';
 import EventHandler from '../../services/services.events';
 import { centeredButton } from '../../utils/button.utils';
 import { pathMedia } from '../../utils/media.utils';
 import { centeredX, centeredY } from '../../utils/position.utils';
 import { pathSprite } from '../../utils/sprite.utils';
-export default class MenuScene extends Phaser.Scene {
+
+export default class MenuScene extends EventScene {
   constructor() {
-    super({
-      key: 'MenuScene',
-    });
+    super({ key: 'MenuScene' });
   }
+
   preload() {
     this._loadAssets();
   }
@@ -21,6 +22,7 @@ export default class MenuScene extends Phaser.Scene {
     );
     this.load.audio('media.effect.button', `${pathMedia}/effects/button.mp3`);
   }
+
   _onClickStart() {
     this.sound.add('media.effect.button').play();
     EventHandler.emit('menu::start');
@@ -32,6 +34,7 @@ export default class MenuScene extends Phaser.Scene {
   }
 
   create() {
+    super.create();
     centeredButton({
       scene: this,
       text: 'Iniciar',

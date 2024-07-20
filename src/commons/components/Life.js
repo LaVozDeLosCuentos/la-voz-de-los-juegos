@@ -2,12 +2,12 @@ import EventHandler from '../../services/services.events';
 import { pathSprite } from '../../utils/sprite.utils';
 
 export default class Life extends Phaser.GameObjects.Container {
-  constructor({ scene, x, y, attempts = 6 }) {
+  constructor({ scene, x, y, attempts = 2 }) {
     super(scene, x, y);
     this.scene = scene;
     this.attempts = attempts;
     this.lifes = this.getLifes();
-    this.addListeners();
+    this._addListeners();
     scene.add.existing(this);
   }
 
@@ -17,7 +17,7 @@ export default class Life extends Phaser.GameObjects.Container {
     scene.load.image('heart-half', `${pathSprite}/ux/hearts/half.png`);
   }
 
-  addListeners() {
+  _addListeners() {
     EventHandler.on('life::lost', this._lostLife, this);
   }
 

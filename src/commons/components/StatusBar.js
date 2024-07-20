@@ -4,9 +4,11 @@ import Life from './Life';
 import { colors } from '../../theme';
 
 class StatusBar extends Phaser.GameObjects.Container {
-  constructor(scene, x, y) {
+  constructor({ scene, x, y, hasLife = true }) {
     super(scene, x, y);
-    scene.add.existing(this);
+
+    this.scene = scene;
+    this.scene.add.existing(this);
     const _color = colors.text.primary;
 
     const padding = 25;
@@ -17,22 +19,29 @@ class StatusBar extends Phaser.GameObjects.Container {
     this.add(graphics);
 
     const currency = new Currency({
-      scene,
+      scene: this.scene,
       x: 0,
       y: 0,
     });
 
-    scene.time.delayedCall(1, () => {
+    this.scene.time.delayedCall(1, () => {
       const currencyWidth = currency.displayWidth;
       const xPosition =
-        scene.cameras.main.displayWidth - currencyWidth - padding * 2;
+        this.scene.cameras.main.displayWidth - currencyWidth - padding * 2;
 
       currency.setPosition(xPosition, 0);
       this.add(currency);
     });
 
-    const life = new Life({ scene, x: padding, y: 0, attempts: 6 });
-    this.add(life);
+    if (hasLife) {
+      const life = new Life({
+        scene: this.scene,
+        x: padding,
+        y: 0,
+        attempts: 22,
+      });
+      this.add(life);
+    }
   }
 
   toggleVisibility() {

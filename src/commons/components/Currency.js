@@ -1,3 +1,4 @@
+import EventHandler from '../../services/services.events';
 import { colors } from '../../theme';
 import { title } from '../../theme/mixins';
 import { pathSprite } from '../../utils/sprite.utils';
@@ -5,7 +6,9 @@ import { pathSprite } from '../../utils/sprite.utils';
 export default class Currency extends Phaser.GameObjects.Container {
   constructor({ scene, x, y }) {
     super(scene, x, y);
-    this.amount = 0;
+
+    this.scene = scene;
+    this.amount = 0; // get from localstorage
     scene.add.existing(this);
 
     this.padding = 5;
@@ -14,7 +17,7 @@ export default class Currency extends Phaser.GameObjects.Container {
     this.background = scene.add.graphics();
     this.add(this.background);
 
-    this.number = scene.add.text(0, 10, this.amount, title);
+    this.number = this.scene.add.text(0, 10, this.amount, title);
     this.number.setOrigin(0);
     this.add(this.number);
 
@@ -30,16 +33,56 @@ export default class Currency extends Phaser.GameObjects.Container {
     scene.time.delayedCall(0, () => {
       this.updateSize();
     });
+    this._addListeners();
   }
 
   static preload(scene) {
     scene.load.image('currency', `${pathSprite}/ux/feathers.png`);
   }
 
-  updateCurrency(newAmount) {
-    this.number.setText(newAmount);
+  _addListeners() {
+    EventHandler.on('currency::gain', this._onGain.bind(this));
+    EventHandler.on('currency::loss', this._onLoss.bind(this));
+  }
+
+  _onGain(a) {
+    this._animateAmountChange(a.amount);
+  }
+
+  _onLoss({ amount = 0 }) {
+    this._animateAmountChange(-amount);
+  }
+
+  _animateAmountChange(amountChange) {
+    const startAmount = this.amount;
+    const endAmount = this.amount + amountChange;
+    const duration = 250;
+
+    this.scene.tweens.addCounter({
+      from: startAmount,
+      to: endAmount,
+      duration: duration,
+      onUpdate: (tween) => {
+        this.amount = Math.floor(tween.getValue());
+        this._drawAmount();
+      },
+      onComplete: () => {
+        this.amount = endAmount;
+        this._drawAmount();
+      },
+    });
+  }
+
+  _drawAmount() {
+    this.number.setText(this.amount);
     this.updatePosition();
     this.updateSize();
+  }
+
+  updateCurrency(newAmount) {
+    this.amount = newAmount;
+    // TODO: Guarda en local storage
+    this._drawAmount();
   }
 
   updatePosition() {
@@ -54,7 +97,7 @@ export default class Currency extends Phaser.GameObjects.Container {
 
     const hexColor = Phaser.Display.Color.HexStringToColor(colors.white).color;
     this.background.clear();
-    this.background.fillStyle(hexColor, 0.8); // Color de fondo, cambia según sea necesario
+    this.background.fillStyle(hexColor, 0.8);
     this.background.fillRoundedRect(
       -this.padding * 2,
       10,

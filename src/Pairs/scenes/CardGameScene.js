@@ -7,8 +7,9 @@ import { pathSprite } from '../../utils/sprite.utils';
 import { pathMedia } from '../../utils/media.utils';
 import StatusBar from '../../commons/components/StatusBar';
 import Life from '../../commons/components/Life';
+import EventScene from '../../commons/Class/EventScene';
 
-export default class CardGameScene extends Phaser.Scene {
+export default class CardGameScene extends EventScene {
   constructor() {
     super({
       key: 'CardGameScene',
@@ -54,7 +55,7 @@ export default class CardGameScene extends Phaser.Scene {
   }
 
   _createUX() {
-    this.statusBar = new StatusBar(this, 0, 0);
+    this.statusBar = new StatusBar({ scene: this, x: 0, y: 0, hasLife: true });
   }
 
   _onSuccessGame() {
@@ -115,21 +116,31 @@ export default class CardGameScene extends Phaser.Scene {
   }
 
   create() {
+    super.create();
     this.board.create();
     this._createUX();
 
     this._addListeners();
     this.events.on('shutdown', this._onShutdown, this);
     this._addMusic();
+    this.spaceKey = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.SPACE,
+    );
+    this.backSpaceKey = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.L,
+    );
+  }
+
+  update() {
+    if (this.spaceKey.isDown) {
+      EventHandler.emit('currency::gain', { amount: 4 });
+    }
+    if (this.backSpaceKey.isDown) {
+      this._onFailGame();
+    }
   }
 
   _onShutdown() {
-    EventHandler.off('board::attempt');
-    EventHandler.off('board::success');
-    EventHandler.off('board::fail');
-    EventHandler.off('board::match');
-    EventHandler.off('life::dead');
-
     if (this.music) {
       this.music.destroy();
       this.music = null;
