@@ -17,9 +17,7 @@ export default class EndScene extends EventScene {
   }
 
   preload() {
-    // Preload assets necesarios para EndScene
     this._loadAssets();
-    // Asegurarse de que Currency también precargue sus assets
     Currency.preload(this);
   }
 
@@ -39,8 +37,7 @@ export default class EndScene extends EventScene {
   _onSuccess() {
     this._drawButton('Repetir');
     this._drawFinishImage('complete');
-    // Emisión de evento después de un pequeño retraso
-    setTimeout(() => EventHandler.emit('currency::gain', { amount: 3 }), 1000);
+    EventHandler.emit('currency::gain', { amount: 5 });
   }
 
   _onFail() {
@@ -76,22 +73,8 @@ export default class EndScene extends EventScene {
     } else {
       this._onFail();
     }
-    this.spaceKey = this.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.SPACE,
-    );
-    this.backSpaceKey = this.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.L,
-    );
   }
 
-  update() {
-    if (this.spaceKey.isDown) {
-      EventHandler.emit('currency::gain', { amount: 4 });
-    }
-    if (this.backSpaceKey.isDown) {
-      EventHandler.emit('currency::loss', { amount: 4 });
-    }
-  }
   _onShutdown() {
     if (this.music) {
       this.music.destroy();

@@ -123,21 +123,6 @@ export default class CardGameScene extends EventScene {
     this._addListeners();
     this.events.on('shutdown', this._onShutdown, this);
     this._addMusic();
-    this.spaceKey = this.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.SPACE,
-    );
-    this.backSpaceKey = this.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.L,
-    );
-  }
-
-  update() {
-    if (this.spaceKey.isDown) {
-      EventHandler.emit('currency::gain', { amount: 4 });
-    }
-    if (this.backSpaceKey.isDown) {
-      this._onFailGame();
-    }
   }
 
   _onShutdown() {
