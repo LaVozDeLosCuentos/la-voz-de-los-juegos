@@ -1,4 +1,5 @@
 import EventHandler from '../../services/services.events';
+import SaveService from '../../services/services.save';
 import { colors } from '../../theme';
 import { title } from '../../theme/mixins';
 import { pathSprite } from '../../utils/sprite.utils';
@@ -8,7 +9,7 @@ export default class Currency extends Phaser.GameObjects.Container {
     super(scene, x, y);
 
     this.scene = scene;
-    this.amount = 0; // get from localstorage
+    this.amount = SaveService.loadCurrency(); // Carga la cantidad de moneda desde el servicio
     scene.add.existing(this);
 
     this.padding = 5;
@@ -45,18 +46,18 @@ export default class Currency extends Phaser.GameObjects.Container {
     EventHandler.on('currency::loss', this._onLoss.bind(this));
   }
 
-  _onGain(a) {
-    this._animateAmountChange(a.amount);
+  _onGain({ amount }) {
+    this._animateAmountChange(amount);
   }
 
-  _onLoss({ amount = 0 }) {
+  _onLoss({ amount }) {
     this._animateAmountChange(-amount);
   }
 
   _animateAmountChange(amountChange) {
     const startAmount = this.amount;
     const endAmount = this.amount + amountChange;
-    const duration = 250;
+    const duration = 500;
 
     this.scene.tweens.addCounter({
       from: startAmount,
@@ -69,6 +70,7 @@ export default class Currency extends Phaser.GameObjects.Container {
       onComplete: () => {
         this.amount = endAmount;
         this._drawAmount();
+        SaveService.saveCurrency(this.amount); // Guarda la nueva cantidad de moneda
       },
     });
   }
@@ -81,7 +83,7 @@ export default class Currency extends Phaser.GameObjects.Container {
 
   updateCurrency(newAmount) {
     this.amount = newAmount;
-    // TODO: Guarda en local storage
+    SaveService.saveCurrency(this.amount); // Guarda la nueva cantidad de moneda
     this._drawAmount();
   }
 
