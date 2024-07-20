@@ -6,6 +6,7 @@ import EndScene from './scenes/EndScene';
 import { colors } from '../theme/index';
 import SceneEventHandler from '../services/services.sceneEvents';
 import EventHandler from '../services/services.events';
+import StoryScene from './scenes/StoryScene';
 
 const { AUTO, Scale } = Phaser;
 
@@ -27,7 +28,7 @@ class Game extends Phaser.Game {
           gravity: { y: 200 },
         },
       },
-      scene: [MenuScene, CardGameScene, EndScene],
+      scene: [MenuScene, CardGameScene, EndScene, StoryScene],
     };
     super(config);
     SceneEventHandler.on('scene::create', this._onSceneCreate, this);
@@ -39,12 +40,17 @@ class Game extends Phaser.Game {
   _onRestart() {
     EventHandler.emit('game::restart');
     this.scene.stop('EndScene');
-    this.scene.start('CardGameScene', { difficulty: 1 });
+    this.scene.start('CardGameScene', { difficulty: 4 });
   }
 
-  _onStart() {
+  _onClassic() {
     this.scene.stop('MenuScene');
-    this.scene.start('CardGameScene', { difficulty: 1 });
+    this.scene.start('CardGameScene', { difficulty: 4 });
+  }
+
+  _onStory() {
+    this.scene.stop('MenuScene');
+    this.scene.start('StoryScene');
   }
 
   _onEnd(params) {
@@ -53,13 +59,14 @@ class Game extends Phaser.Game {
   }
 
   _addListeners() {
-    EventHandler.on('menu::start', this._onStart, this);
+    EventHandler.on('menu::classic', this._onClassic, this);
+    EventHandler.on('menu::story', this._onStory, this);
     EventHandler.on('end::restart', this._onRestart, this);
     EventHandler.on('board::finish', this._onEnd, this);
   }
 
   init() {
-    setTimeout(() => this._onStart(), 100);
+    //setTimeout(() => this._onClassic(), 100);
   }
   _onSceneCreate() {
     this._addListeners();
