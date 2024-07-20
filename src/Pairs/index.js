@@ -1,9 +1,11 @@
 import Phaser from 'phaser';
 import CardGameScene from './scenes/CardGameScene';
 import MenuScene from './scenes/MenuScene';
-import EventHandler from '../services/services.events';
+
 import EndScene from './scenes/EndScene';
 import { colors } from '../theme/index';
+import SceneEventHandler from '../services/services.sceneEvents';
+import EventHandler from '../services/services.events';
 
 const { AUTO, Scale } = Phaser;
 
@@ -28,6 +30,8 @@ class Game extends Phaser.Game {
       scene: [MenuScene, CardGameScene, EndScene],
     };
     super(config);
+    SceneEventHandler.on('scene::create', this._onSceneCreate, this);
+    SceneEventHandler.on('scene::shutdown', this._onSceneShutdown, this);
     this._addListeners();
     this.init();
   }
@@ -55,7 +59,14 @@ class Game extends Phaser.Game {
   }
 
   init() {
-    //setTimeout(() => this._onStart(), 100)
+    //setTimeout(() => this._onStart(), 100);
+  }
+  _onSceneCreate() {
+    this._addListeners();
+  }
+
+  _onSceneShutdown() {
+    this._addListeners();
   }
 }
 

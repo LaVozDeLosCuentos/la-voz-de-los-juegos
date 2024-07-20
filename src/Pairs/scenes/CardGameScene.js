@@ -2,21 +2,23 @@ import Board from '../components/Board';
 import characters from '../../data/characters.json';
 import EventHandler from '../../services/services.events';
 import { centeredButton } from '../../utils/button.utils';
-import Life from '../../commons/components/Life';
+import Currency from '../../commons/components/Currency';
 import { pathSprite } from '../../utils/sprite.utils';
 import { pathMedia } from '../../utils/media.utils';
+import StatusBar from '../../commons/components/StatusBar';
+import Life from '../../commons/components/Life';
+import EventScene from '../../commons/Class/EventScene';
 
-const MAX_ATTEMPTS = 6;
-export default class CardGameScene extends Phaser.Scene {
+export default class CardGameScene extends EventScene {
   constructor() {
     super({
       key: 'CardGameScene',
     });
     this.board;
     this.characters = characters;
-    this.life;
     this.music;
     this.effects = {};
+    this.currency;
   }
 
   init() {}
@@ -27,6 +29,7 @@ export default class CardGameScene extends Phaser.Scene {
       cards: this.characters,
     });
     Life.preload(this);
+    Currency.preload(this);
   }
 
   _loadAssets() {
@@ -52,7 +55,7 @@ export default class CardGameScene extends Phaser.Scene {
   }
 
   _createUX() {
-    this.life = new Life({ scene: this, attempts: MAX_ATTEMPTS });
+    this.statusBar = new StatusBar({ scene: this, x: 0, y: 0, hasLife: true });
   }
 
   _onSuccessGame() {
@@ -113,24 +116,31 @@ export default class CardGameScene extends Phaser.Scene {
   }
 
   create() {
+    super.create();
     this.board.create();
     this._createUX();
-    this.life.create();
+
     this._addListeners();
     this.events.on('shutdown', this._onShutdown, this);
     this._addMusic();
+    this.spaceKey = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.SPACE,
+    );
+    this.backSpaceKey = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.L,
+    );
+  }
+
+  update() {
+    if (this.spaceKey.isDown) {
+      EventHandler.emit('currency::gain', { amount: 4 });
+    }
+    if (this.backSpaceKey.isDown) {
+      this._onFailGame();
+    }
   }
 
   _onShutdown() {
-    EventHandler.off('board::attempt');
-    EventHandler.off('board::success');
-    EventHandler.off('board::fail');
-    EventHandler.off('board::match');
-    EventHandler.off('life::dead');
-    if (this.life) {
-      this.life.destroy();
-      this.life = null;
-    }
     if (this.music) {
       this.music.destroy();
       this.music = null;
