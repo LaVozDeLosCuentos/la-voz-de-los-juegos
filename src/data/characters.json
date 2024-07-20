@@ -2,26 +2,26 @@
   {
     "id": 1,
     "name": "scene1",
-    "img": "/la-voz-de-los-cuentos-games/assets/characters/scene1.png"
+    "img": "/la-voz-de-los-cuentos-games/assets/cards/characters/scene1.png"
   },
   {
     "id": 2,
     "name": "scene2",
-    "img": "/la-voz-de-los-cuentos-games/assets/characters/scene2.png"
+    "img": "/la-voz-de-los-cuentos-games/assets/cards/characters/scene2.png"
   },
   {
     "id": 3,
     "name": "scene3",
-    "img": "/la-voz-de-los-cuentos-games/assets/characters/scene3.png"
+    "img": "/la-voz-de-los-cuentos-games/assets/cards/characters/scene3.png"
   },
   {
     "id": 4,
     "name": "scene4",
-    "img": "/la-voz-de-los-cuentos-games/assets/characters/scene4.png"
+    "img": "/la-voz-de-los-cuentos-games/assets/cards/characters/scene4.png"
   },
   {
     "id": 5,
     "name": "scene5",
-    "img": "/la-voz-de-los-cuentos-games/assets/characters/scene5.png"
+    "img": "/la-voz-de-los-cuentos-games/assets/cards/characters/scene5.png"
   }
 ]

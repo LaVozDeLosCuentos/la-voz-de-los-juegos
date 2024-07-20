@@ -21,12 +21,16 @@ export default class CardGameScene extends EventScene {
     this.currency;
   }
 
-  init() {}
+  init(data) {
+    this.difficulty = data.difficulty;
+  }
+
   preload() {
     this._loadAssets();
     this.board = new Board({
       scene: this,
       cards: this.characters,
+      difficulty: this.difficulty,
     });
     Life.preload(this);
     Currency.preload(this);

@@ -8,7 +8,7 @@ const CARD_HEIGHT = 120;
 const GAP = 5;
 
 export default class Board extends Phaser.GameObjects.Container {
-  constructor({ scene, cards, headingHeight = 65 }) {
+  constructor({ scene, cards, headingHeight = 65, difficulty = 1 }) {
     super(scene);
     this.cards = [];
     this.selectedCards = [];
@@ -19,6 +19,7 @@ export default class Board extends Phaser.GameObjects.Container {
     this.cardWidth = CARD_WIDTH;
     this.cardHeight = CARD_HEIGHT;
     this.scale = 1;
+    this.difficulty = difficulty;
     this._adjustCardSize(scene);
     this.initialX =
       ((scene.cameras.main.displayWidth % (this.cardWidth + GAP)) +
@@ -29,6 +30,20 @@ export default class Board extends Phaser.GameObjects.Container {
 
   init() {}
 
+  _getCardsByDifficulty() {
+    const difficultyMap = {
+      1: 2,
+      2: 4,
+      3: 8,
+      4: 10,
+    };
+    const mappedDifficulty = difficultyMap[this.difficulty];
+    const cards =
+      this.baseCards.length > mappedDifficulty
+        ? mappedDifficulty
+        : this.baseCards.length;
+    return cards;
+  }
   _adjustCardSize(scene) {
     this.cardWidth = CARD_WIDTH * this.scale;
     this.cardHeight = CARD_HEIGHT * this.scale;
@@ -120,7 +135,7 @@ export default class Board extends Phaser.GameObjects.Container {
   }
 
   _getPairs() {
-    return this.baseCards.length;
+    return this._getCardsByDifficulty();
   }
   _getTotalCards() {
     return this._getPairs() * 2;

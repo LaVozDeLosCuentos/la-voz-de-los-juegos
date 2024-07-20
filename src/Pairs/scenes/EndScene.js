@@ -22,8 +22,15 @@ export default class EndScene extends EventScene {
   }
 
   _loadAssets() {
+    this.load.image(
+      'complete-sticker',
+      `${pathSprite}/stickers/luna/smile2.png`,
+    );
+    this.load.image(
+      'try-again-sticker',
+      `${pathSprite}/stickers/luna/sobbing.png`,
+    );
     this.load.image('complete', `${pathSprite}/ux/complete.png`);
-    this.load.image('try-again', `${pathSprite}/ux/try-again.png`);
   }
 
   _createUX() {
@@ -36,13 +43,29 @@ export default class EndScene extends EventScene {
 
   _onSuccess() {
     this._drawButton('Repetir');
-    this._drawFinishImage('complete');
     EventHandler.emit('currency::gain', { amount: 5 });
+    this.sticker = this.add.sprite(
+      centeredX(this),
+      centeredY(this) - 200,
+      'complete-sticker',
+    );
+    this.sticker.setDisplaySize(300, 300);
+
+    this.image = this.add.sprite(
+      centeredX(this),
+      centeredY(this) - 50,
+      'complete',
+    );
   }
 
   _onFail() {
     this._drawButton('Reintentar');
-    this._drawFinishImage('try-again');
+    this.sticker = this.add.sprite(
+      centeredX(this),
+      centeredY(this) - 100,
+      'try-again-sticker',
+    );
+    this.sticker.setDisplaySize(300, 300);
   }
 
   _drawButton(text) {
@@ -52,15 +75,6 @@ export default class EndScene extends EventScene {
       y: centeredY(this) + 100,
       callback: this._onClickRestart.bind(this),
     });
-  }
-
-  _drawFinishImage(sprite) {
-    this.image = this.add.sprite(
-      centeredX(this),
-      centeredY(this) - 100,
-      sprite,
-    );
-    this.image.setDisplaySize(300, 300);
   }
 
   create() {

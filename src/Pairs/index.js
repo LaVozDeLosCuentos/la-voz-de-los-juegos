@@ -39,12 +39,12 @@ class Game extends Phaser.Game {
   _onRestart() {
     EventHandler.emit('game::restart');
     this.scene.stop('EndScene');
-    this.scene.start('CardGameScene');
+    this.scene.start('CardGameScene', { difficulty: 1 });
   }
 
   _onStart() {
     this.scene.stop('MenuScene');
-    this.scene.start('CardGameScene');
+    this.scene.start('CardGameScene', { difficulty: 1 });
   }
 
   _onEnd(params) {
@@ -59,7 +59,7 @@ class Game extends Phaser.Game {
   }
 
   init() {
-    //setTimeout(() => this._onStart(), 100);
+    setTimeout(() => this._onStart(), 100);
   }
   _onSceneCreate() {
     this._addListeners();
