@@ -7,6 +7,7 @@ import { colors } from '../theme/index';
 import SceneEventHandler from '../services/services.sceneEvents';
 import EventHandler from '../services/services.events';
 import StoryScene from './scenes/StoryScene';
+import PairsSave from './saves/pairs.save';
 
 const { AUTO, Scale } = Phaser;
 
@@ -37,10 +38,22 @@ class Game extends Phaser.Game {
     this.init();
   }
 
-  _onRestart() {
+  _onCompleteLevel(data) {
+    if (data.number) {
+      PairsSave.saveLevel(data.number + 1);
+    }
+  }
+  _onRestart(data) {
     EventHandler.emit('game::restart');
     this.scene.stop('EndScene');
-    this.scene.start('CardGameScene', { difficulty: 4 });
+    if (data.success && data.isStory) {
+      this._onStory();
+      return;
+    }
+    this.scene.start('CardGameScene', {
+      difficulty: data?.difficulty || 4,
+      isStory: data?.isStory,
+    });
   }
 
   _onClassic() {
@@ -54,10 +67,13 @@ class Game extends Phaser.Game {
   }
 
   _onStoryLevel(data) {
-    console.log(data);
+    this.scene.stop('StoryScene');
+    this.scene.start('CardGameScene', { ...data, isStory: true });
   }
 
   _onEnd(params) {
+    this._onCompleteLevel(params);
+
     this.scene.stop('CardGameScene');
     this.scene.start('EndScene', params);
   }
@@ -71,7 +87,7 @@ class Game extends Phaser.Game {
   }
 
   init() {
-    setTimeout(() => this._onStory(), 100);
+    //setTimeout(() => this._onStory(), 100);
   }
   _onSceneCreate() {
     this._addListeners();

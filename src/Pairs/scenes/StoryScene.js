@@ -2,6 +2,7 @@ import EventScene from '../../commons/Class/EventScene';
 import StatusBar from '../../commons/components/StatusBar';
 import { pathSprite } from '../../utils/sprite.utils';
 import StoryGridItem from '../components/StoryGridItem';
+import PairsSave from '../saves/pairs.save';
 
 const GAP = 20;
 const MARGIN = 100;
@@ -10,12 +11,6 @@ export default class StoryScene extends EventScene {
   constructor() {
     super({ key: 'StoryScene' });
     this.markers;
-    this.current = 1; //LOAD FROM STORE DATA
-    this.levels = new Array(8).fill(1).map((entry, index) => ({
-      number: index + 1,
-      difficulty: index + 1,
-      state: this._getState(index + 1),
-    }));
   }
 
   _getState(index) {
@@ -40,8 +35,16 @@ export default class StoryScene extends EventScene {
 
   create() {
     super.create();
+    this.current = PairsSave.loadLevel(); //LOAD FROM STORE DATA
+    console.log({ current: this.current });
+    this.levels = new Array(8).fill(1).map((entry, index) => ({
+      number: index + 1,
+      difficulty: index + 1,
+      state: this._getState(index + 1),
+    }));
     this._createGrid();
     this._createUX();
+    this.events.on('shutdown', this._onShutdown, this);
   }
 
   _createUX() {
@@ -54,6 +57,13 @@ export default class StoryScene extends EventScene {
         current: this.current - 1,
       },
     });
+  }
+
+  _onShutdown() {
+    this.markers.forEach((marker) => {
+      marker.destroy();
+    });
+    this.markers = [];
   }
 
   _createGrid() {

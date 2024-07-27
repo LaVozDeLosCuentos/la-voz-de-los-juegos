@@ -1,7 +1,7 @@
 import { title } from '../../theme/mixins';
 
 export default class Progression extends Phaser.GameObjects.Container {
-  constructor({ scene, x, y, padding, total, current }) {
+  constructor({ scene, x, y, total, current }) {
     super(scene, x, y);
     this.scene = scene;
     this.current = current;

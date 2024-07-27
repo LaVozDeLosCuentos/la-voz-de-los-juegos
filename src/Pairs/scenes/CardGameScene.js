@@ -20,7 +20,11 @@ export default class CardGameScene extends EventScene {
   }
 
   init(data) {
+    console.log({
+      data,
+    });
     this.difficulty = data.difficulty;
+    this.level = data;
   }
 
   preload() {
@@ -62,12 +66,14 @@ export default class CardGameScene extends EventScene {
   _onSuccessGame() {
     EventHandler.emit('board::finish', {
       success: true,
+      ...this.level,
     });
   }
 
   _onGameOver() {
     EventHandler.emit('board::finish', {
       success: false,
+      ...this.level,
     });
   }
   _failSound() {

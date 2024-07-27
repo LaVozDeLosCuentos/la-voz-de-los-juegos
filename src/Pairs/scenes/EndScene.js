@@ -12,8 +12,12 @@ export default class EndScene extends EventScene {
     this.success = false;
   }
 
-  init({ success }) {
-    this.success = success;
+  init(data) {
+    this.success = data.success;
+    this.isStory = data.isStory;
+    this.difficulty = data.difficulty;
+    this.number = data.number;
+    console.log(data);
   }
 
   preload() {
@@ -38,11 +42,16 @@ export default class EndScene extends EventScene {
   }
 
   _onClickRestart() {
-    EventHandler.emit('end::restart');
+    EventHandler.emit('end::restart', {
+      difficulty: this.difficulty,
+      isStory: this.isStory,
+      success: this.success,
+      number: this.number,
+    });
   }
 
   _onSuccess() {
-    this._drawButton('Repetir');
+    this._drawButton(this.isStory ? 'Siguiente' : 'Repetir');
     EventHandler.emit('currency::gain', { amount: 5 });
     this.sticker = this.add.sprite(
       centeredX(this),

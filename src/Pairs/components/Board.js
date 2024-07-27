@@ -33,9 +33,13 @@ export default class Board extends Phaser.GameObjects.Container {
   _getCardsByDifficulty() {
     const difficultyMap = {
       1: 2,
-      2: 4,
-      3: 8,
-      4: 10,
+      2: 3,
+      3: 4,
+      4: 5,
+      5: 6,
+      6: 7,
+      7: 8,
+      8: 9,
     };
     const mappedDifficulty = difficultyMap[this.difficulty];
     const cards =
