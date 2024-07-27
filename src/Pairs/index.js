@@ -66,7 +66,7 @@ class Game extends Phaser.Game {
   }
 
   init() {
-    //setTimeout(() => this._onClassic(), 100);
+    setTimeout(() => this._onStory(), 100);
   }
   _onSceneCreate() {
     this._addListeners();

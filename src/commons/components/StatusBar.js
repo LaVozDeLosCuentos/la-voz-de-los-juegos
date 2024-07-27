@@ -44,6 +44,11 @@ class StatusBar extends Phaser.GameObjects.Container {
     }
   }
 
+  static preload(scene) {
+    Life.preload(scene);
+    Currency.preload(scene);
+  }
+
   toggleVisibility() {
     this.setVisible(!this.visible);
   }
