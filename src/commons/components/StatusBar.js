@@ -2,9 +2,11 @@ import Phaser from 'phaser';
 import Currency from '../../commons/components/Currency';
 import Life from './Life';
 import { colors } from '../../theme';
+import Progression from './Progression';
+import { centeredX } from '../../utils/position.utils.js';
 
 class StatusBar extends Phaser.GameObjects.Container {
-  constructor({ scene, x, y, hasLife = true }) {
+  constructor({ scene, x, y, hasLife = true, progression }) {
     super(scene, x, y);
 
     this.scene = scene;
@@ -32,6 +34,15 @@ class StatusBar extends Phaser.GameObjects.Container {
       currency.setPosition(xPosition, 0);
       this.add(currency);
     });
+    if (progression && progression.total) {
+      new Progression({
+        scene: this.scene,
+        x: centeredX(this.scene),
+        y: padding,
+        padding,
+        ...progression,
+      });
+    }
 
     if (hasLife) {
       const life = new Life({

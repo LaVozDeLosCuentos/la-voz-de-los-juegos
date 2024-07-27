@@ -53,6 +53,10 @@ class Game extends Phaser.Game {
     this.scene.start('StoryScene');
   }
 
+  _onStoryLevel(data) {
+    console.log(data);
+  }
+
   _onEnd(params) {
     this.scene.stop('CardGameScene');
     this.scene.start('EndScene', params);
@@ -63,6 +67,7 @@ class Game extends Phaser.Game {
     EventHandler.on('menu::story', this._onStory, this);
     EventHandler.on('end::restart', this._onRestart, this);
     EventHandler.on('board::finish', this._onEnd, this);
+    EventHandler.on('level::next', this._onStoryLevel, this);
   }
 
   init() {

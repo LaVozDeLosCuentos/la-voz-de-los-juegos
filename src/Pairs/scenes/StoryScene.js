@@ -10,14 +10,28 @@ export default class StoryScene extends EventScene {
   constructor() {
     super({ key: 'StoryScene' });
     this.markers;
-    this.levels = new Array(8)
-      .fill(1)
-      .map((entry, index) => ({ difficulty: index + 1 }));
+    this.current = 1; //LOAD FROM STORE DATA
+    this.levels = new Array(8).fill(1).map((entry, index) => ({
+      number: index + 1,
+      difficulty: index + 1,
+      state: this._getState(index + 1),
+    }));
+  }
+
+  _getState(index) {
+    if (index < this.current) return 'map.marker.complete';
+    if (index === this.current) return 'map.marker.next';
+    return 'map.marker.block';
   }
 
   preload() {
     StatusBar.preload(this);
-    this.load.image('map.marker', `${pathSprite}/ux/maps/marker.png`);
+    this.load.image(
+      'map.marker.block',
+      `${pathSprite}/ux/maps/marker-block.png`,
+    );
+    this.load.image('map.marker.next', `${pathSprite}/ux/maps/marker-next.png`);
+
     this.load.image(
       'map.marker.complete',
       `${pathSprite}/ux/maps/marker-complete.png`,
@@ -31,7 +45,15 @@ export default class StoryScene extends EventScene {
   }
 
   _createUX() {
-    this.statusBar = new StatusBar({ scene: this, x: 0, y: 0 });
+    this.statusBar = new StatusBar({
+      scene: this,
+      x: 0,
+      y: 0,
+      progression: {
+        total: this.levels.length,
+        current: this.current - 1,
+      },
+    });
   }
 
   _createGrid() {
@@ -39,7 +61,7 @@ export default class StoryScene extends EventScene {
     const rows = Math.ceil(this.levels.length / columns);
     const itemWidth = (this.sys.canvas.width - MARGIN) / columns;
     const itemHeight = (this.sys.canvas.height - MARGIN - UX_HEADER) / rows;
-    this.markers = new Array(this.levels.length).fill(1).map((_, i) => {
+    this.markers = this.levels.map((level, i) => {
       const columnIndex = i % columns;
       const rowIndex = Math.floor(i / columns);
 
@@ -52,6 +74,7 @@ export default class StoryScene extends EventScene {
 
       return new StoryGridItem({
         scene: this,
+        level,
         x,
         y,
         width: itemWidth,
