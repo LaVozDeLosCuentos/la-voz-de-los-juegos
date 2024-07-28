@@ -12,8 +12,11 @@ export default class EndScene extends EventScene {
     this.success = false;
   }
 
-  init({ success }) {
-    this.success = success;
+  init(data) {
+    this.success = data.success;
+    this.isStory = data.isStory;
+    this.difficulty = data.difficulty;
+    this.number = data.number;
   }
 
   preload() {
@@ -22,8 +25,15 @@ export default class EndScene extends EventScene {
   }
 
   _loadAssets() {
+    this.load.image(
+      'complete-sticker',
+      `${pathSprite}/stickers/luna/smile2.png`,
+    );
+    this.load.image(
+      'try-again-sticker',
+      `${pathSprite}/stickers/luna/sobbing.png`,
+    );
     this.load.image('complete', `${pathSprite}/ux/complete.png`);
-    this.load.image('try-again', `${pathSprite}/ux/try-again.png`);
   }
 
   _createUX() {
@@ -31,36 +41,63 @@ export default class EndScene extends EventScene {
   }
 
   _onClickRestart() {
-    EventHandler.emit('end::restart');
+    EventHandler.emit('end::restart', {
+      difficulty: this.difficulty,
+      isStory: this.isStory,
+      success: this.success,
+      number: this.number,
+    });
+  }
+
+  _onGoBack() {
+    EventHandler.emit('end::back', {
+      difficulty: this.difficulty,
+      isStory: this.isStory,
+      success: this.success,
+      number: this.number,
+    });
   }
 
   _onSuccess() {
-    this._drawButton('Repetir');
-    this._drawFinishImage('complete');
-    EventHandler.emit('currency::gain', { amount: 5 });
+    this._drawButtons(this.isStory ? 'Siguiente' : 'Repetir');
+    EventHandler.emit('currency::gain', { amount: this.difficulty || 4 });
+    this.sticker = this.add.sprite(
+      centeredX(this),
+      centeredY(this) - 200,
+      'complete-sticker',
+    );
+    this.sticker.setDisplaySize(300, 300);
+
+    this.image = this.add.sprite(
+      centeredX(this),
+      centeredY(this) - 50,
+      'complete',
+    );
   }
 
   _onFail() {
-    this._drawButton('Reintentar');
-    this._drawFinishImage('try-again');
+    this._drawButtons('Reintentar');
+    this.sticker = this.add.sprite(
+      centeredX(this),
+      centeredY(this) - 100,
+      'try-again-sticker',
+    );
+    this.sticker.setDisplaySize(300, 300);
   }
 
-  _drawButton(text) {
+  _drawButtons(text) {
     centeredButton({
       scene: this,
       text,
       y: centeredY(this) + 100,
       callback: this._onClickRestart.bind(this),
     });
-  }
-
-  _drawFinishImage(sprite) {
-    this.image = this.add.sprite(
-      centeredX(this),
-      centeredY(this) - 100,
-      sprite,
-    );
-    this.image.setDisplaySize(300, 300);
+    centeredButton({
+      scene: this,
+      text: 'Volver al Menu',
+      y: centeredY(this) + 160,
+      callback: this._onGoBack.bind(this),
+    });
   }
 
   create() {

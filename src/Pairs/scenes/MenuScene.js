@@ -1,9 +1,9 @@
 import EventScene from '../../commons/Class/EventScene';
 import EventHandler from '../../services/services.events';
-import { centeredButton } from '../../utils/button.utils';
 import { pathMedia } from '../../utils/media.utils';
 import { centeredX, centeredY } from '../../utils/position.utils';
 import { pathSprite } from '../../utils/sprite.utils';
+import NavigationMenu from '../components/NavigationMenu';
 
 export default class MenuScene extends EventScene {
   constructor() {
@@ -33,20 +33,23 @@ export default class MenuScene extends EventScene {
     this.music.play({ loop: true, volume: 0.04 });
   }
 
-  create() {
-    super.create();
-    centeredButton({
-      scene: this,
-      text: 'Iniciar',
-      y: centeredY(this) + 100,
-      callback: this._onClickStart.bind(this),
-    });
+  _addLogo() {
     this.image = this.add.sprite(
       centeredX(this),
       centeredY(this) - 100,
       'logo',
     );
     this.image.setDisplaySize(300, 300);
+  }
+
+  _addButton() {
+    this.navigationMenu = new NavigationMenu(this, 0, 500);
+  }
+  create() {
+    super.create();
+
+    this._addLogo();
+    this._addButton();
     this._addMusic();
     this.events.on('shutdown', this._onShutdown, this);
   }

@@ -2,11 +2,9 @@ import Board from '../components/Board';
 import characters from '../../data/characters.json';
 import EventHandler from '../../services/services.events';
 import { centeredButton } from '../../utils/button.utils';
-import Currency from '../../commons/components/Currency';
 import { pathSprite } from '../../utils/sprite.utils';
 import { pathMedia } from '../../utils/media.utils';
 import StatusBar from '../../commons/components/StatusBar';
-import Life from '../../commons/components/Life';
 import EventScene from '../../commons/Class/EventScene';
 
 export default class CardGameScene extends EventScene {
@@ -21,15 +19,19 @@ export default class CardGameScene extends EventScene {
     this.currency;
   }
 
-  init() {}
+  init(data) {
+    this.difficulty = data.difficulty;
+    this.level = data;
+  }
+
   preload() {
     this._loadAssets();
     this.board = new Board({
       scene: this,
       cards: this.characters,
+      difficulty: this.difficulty,
     });
-    Life.preload(this);
-    Currency.preload(this);
+    StatusBar.preload(this);
   }
 
   _loadAssets() {
@@ -61,12 +63,14 @@ export default class CardGameScene extends EventScene {
   _onSuccessGame() {
     EventHandler.emit('board::finish', {
       success: true,
+      ...this.level,
     });
   }
 
   _onGameOver() {
     EventHandler.emit('board::finish', {
       success: false,
+      ...this.level,
     });
   }
   _failSound() {
