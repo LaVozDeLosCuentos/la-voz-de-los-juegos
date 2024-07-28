@@ -66,7 +66,7 @@ export default class EndScene extends EventScene {
       centeredY(this) - 200,
       'complete-sticker',
     );
-    this.sticker.setDisplaySize(300, 300);
+    this.sticker.setDisplaySize(200, 200);
 
     this.image = this.add.sprite(
       centeredX(this),
@@ -82,7 +82,7 @@ export default class EndScene extends EventScene {
       centeredY(this) - 100,
       'try-again-sticker',
     );
-    this.sticker.setDisplaySize(300, 300);
+    this.sticker.setDisplaySize(200, 200);
   }
 
   _drawButtons(text) {
