@@ -23,11 +23,15 @@ export default [
     plugins: {
       prettier: prettierPlugin,
     },
-
     rules: {
       ...js.configs.recommended.rules,
       ...prettier.rules,
-      'prettier/prettier': 'error',
+      'prettier/prettier': [
+        'error',
+        {
+          endOfLine: 'auto',
+        },
+      ],
     },
   },
 ];
