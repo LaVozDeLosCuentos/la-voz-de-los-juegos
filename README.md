@@ -10,12 +10,11 @@ This project uses the "La Voz De Los Cuentos Games" library along with Phaser 3 
 
 ## Available Commands
 
-| Command         | Description                                     |
-| --------------- | ----------------------------------------------- |
-| `npm install`   | Install project dependencies                    |
-| `npm run dev`   | Launch a development web server                 |
-| `npm run build` | Create a production build in the `dist` folder  |
-
+| Command         | Description                                    |
+| --------------- | ---------------------------------------------- |
+| `npm install`   | Install project dependencies                   |
+| `npm run dev`   | Launch a development web server                |
+| `npm run build` | Create a production build in the `dist` folder |
 
 ## Installation
 
@@ -27,6 +26,7 @@ To install the project and its dependencies, follow these steps:
    cd la-voz-de-los-cuentos-games
    ```
 2. Install
+
    ```bash
    npm install
    ```
@@ -35,7 +35,6 @@ To install the project and its dependencies, follow these steps:
    ```bash
    npm run dev
    ```
-
 
 ## Runing / Debugging / QA
 
