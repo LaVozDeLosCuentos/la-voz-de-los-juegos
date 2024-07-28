@@ -17,7 +17,6 @@ export default class EndScene extends EventScene {
     this.isStory = data.isStory;
     this.difficulty = data.difficulty;
     this.number = data.number;
-    console.log(data);
   }
 
   preload() {

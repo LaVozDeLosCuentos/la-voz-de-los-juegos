@@ -22,7 +22,7 @@ export default class StoryGridItem extends Phaser.GameObjects.Container {
   }
 
   _onClick() {
-    if (this.state.includes('next')) {
+    if (!this.state.includes('block')) {
       EventHandler.emit('level::next', this.level);
     }
   }

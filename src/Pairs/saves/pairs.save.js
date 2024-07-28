@@ -2,6 +2,7 @@ const STORAGE_KEY = 'pairs';
 
 class PairsSave {
   static saveLevel(level) {
+    if (this.loadLevel() > level) return;
     localStorage.setItem(`${STORAGE_KEY}::level`, `${level}`);
   }
 

@@ -36,8 +36,8 @@ export default class StoryScene extends EventScene {
   create() {
     super.create();
     this.current = PairsSave.loadLevel(); //LOAD FROM STORE DATA
-    console.log({ current: this.current });
-    this.levels = new Array(8).fill(1).map((entry, index) => ({
+
+    this.levels = new Array(5).fill(1).map((entry, index) => ({
       number: index + 1,
       difficulty: index + 1,
       state: this._getState(index + 1),

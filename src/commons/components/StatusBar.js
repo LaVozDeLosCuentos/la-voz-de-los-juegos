@@ -49,7 +49,7 @@ class StatusBar extends Phaser.GameObjects.Container {
         scene: this.scene,
         x: padding,
         y: 0,
-        attempts: 2,
+        attempts: 4,
       });
       this.add(life);
     }

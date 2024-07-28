@@ -20,9 +20,6 @@ export default class CardGameScene extends EventScene {
   }
 
   init(data) {
-    console.log({
-      data,
-    });
     this.difficulty = data.difficulty;
     this.level = data;
   }
