@@ -23,5 +23,15 @@
     "id": 5,
     "name": "scene5",
     "img": "/la-voz-de-los-cuentos-games/assets/cards/characters/scene5.png"
+  },
+  {
+    "id": 6,
+    "name": "scene6",
+    "img": "/la-voz-de-los-cuentos-games/assets/cards/characters/scene6.png"
+  },
+  {
+    "id": 7,
+    "name": "scene7",
+    "img": "/la-voz-de-los-cuentos-games/assets/cards/characters/scene7.png"
   }
 ]

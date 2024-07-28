@@ -49,9 +49,18 @@ export default class EndScene extends EventScene {
     });
   }
 
+  _onGoBack() {
+    EventHandler.emit('end::back', {
+      difficulty: this.difficulty,
+      isStory: this.isStory,
+      success: this.success,
+      number: this.number,
+    });
+  }
+
   _onSuccess() {
-    this._drawButton(this.isStory ? 'Siguiente' : 'Repetir');
-    EventHandler.emit('currency::gain', { amount: 5 });
+    this._drawButtons(this.isStory ? 'Siguiente' : 'Repetir');
+    EventHandler.emit('currency::gain', { amount: this.difficulty || 4 });
     this.sticker = this.add.sprite(
       centeredX(this),
       centeredY(this) - 200,
@@ -67,7 +76,7 @@ export default class EndScene extends EventScene {
   }
 
   _onFail() {
-    this._drawButton('Reintentar');
+    this._drawButtons('Reintentar');
     this.sticker = this.add.sprite(
       centeredX(this),
       centeredY(this) - 100,
@@ -76,12 +85,18 @@ export default class EndScene extends EventScene {
     this.sticker.setDisplaySize(300, 300);
   }
 
-  _drawButton(text) {
+  _drawButtons(text) {
     centeredButton({
       scene: this,
       text,
       y: centeredY(this) + 100,
       callback: this._onClickRestart.bind(this),
+    });
+    centeredButton({
+      scene: this,
+      text: 'Volver al Menu',
+      y: centeredY(this) + 160,
+      callback: this._onGoBack.bind(this),
     });
   }
 

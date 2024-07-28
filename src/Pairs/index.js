@@ -78,12 +78,18 @@ class Game extends Phaser.Game {
     this.scene.start('EndScene', params);
   }
 
+  _onGoToMenu() {
+    this.scene.stop('EndScene');
+    this.scene.start('MenuScene');
+  }
+
   _addListeners() {
     EventHandler.on('menu::classic', this._onClassic, this);
     EventHandler.on('menu::story', this._onStory, this);
     EventHandler.on('end::restart', this._onRestart, this);
     EventHandler.on('board::finish', this._onEnd, this);
     EventHandler.on('level::next', this._onStoryLevel, this);
+    EventHandler.on('end::back', this._onGoToMenu, this);
   }
 
   init() {
